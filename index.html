@@ -28,14 +28,10 @@
     <button class="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="site-nav"><span></span></button>
 
     <nav class="nav" id="site-nav" aria-label="Main">
-      <a href="index.html" aria-current="page">Home</a>
-      <a href="about.html">About</a>
       <a href="work.html">Work</a>
-      <a href="reel.html">Reel</a>
-      <a href="photos.html">Photos</a>
+      <a href="reels.html">Reels</a>
       <a href="press.html">Press</a>
-      <a href="contact.html">Contact</a>
-      <a class="btn btn--pill btn--small" href="contact.html">Casting / Contact</a>
+      <a class="btn btn--pill btn--small" href="contact.html">Contact</a>
     </nav>
   </div>
 </header>
@@ -54,12 +50,53 @@
     <p class="eyebrow hero__sub">Hawaiʻi &nbsp;/&nbsp; Los Angeles &nbsp;/&nbsp; Available worldwide</p>
 
     <div class="hero__actions">
-      <a class="btn btn--solid" href="reel.html">Watch Reel</a>
+      <a class="btn btn--solid" href="reels.html">Watch Reel</a>
       <a class="btn btn--light" href="work.html">View Work</a>
       <a class="btn btn--light" href="contact.html">Contact</a>
     </div>
   </div>
   <p class="hero__script" aria-hidden="true">Real stories.<br>Big dreams.<br>Hawaiʻi roots.</p>
+</section>
+
+
+<!-- ===================== ABOUT + DISCIPLINES =====================
+     The short bio introduces the three columns below it: the bio names
+     her disciplines, and the columns break each one down. -->
+<section class="container about-disciplines" aria-labelledby="about-title">
+  <div class="about-lead">
+    <h2 class="eyebrow" id="about-title">Meet Malia</h2>
+    <p class="about-lead__text">
+      Malia Aiello is a Native Hawaiian actor, host and model born and raised on Oʻahu.
+      Her work spans television, film, commercials, live events and stage, with a passion
+      for storytelling that connects Hawaiʻi to audiences around the world.
+    </p>
+  </div>
+  <div class="disciplines">
+    <a class="discipline" href="work.html#scene-clip">
+      <svg viewBox="0 0 32 32" fill="none" stroke-width="1.4" aria-hidden="true">
+        <rect x="4" y="12" width="24" height="15" rx="1"/><path d="M4 12l1.5-6 22.5 2.5-1 3.5"/><path d="M10 6.6l-2 5.4M16.5 7.3l-2 4.7M23 8l-2 4"/><path d="M4 17h24"/>
+      </svg>
+      <h3 class="display">Actor</h3>
+      <p>Film • Television • Commercial • Theatre</p>
+      <span class="link-arrow">View acting work</span>
+    </a>
+    <a class="discipline" href="work.html#hosting">
+      <svg viewBox="0 0 32 32" fill="none" stroke-width="1.4" aria-hidden="true">
+        <rect x="11.5" y="3.5" width="9" height="15" rx="4.5"/><path d="M7.5 14.5a8.5 8.5 0 0017 0M16 23v5.5M11.5 28.5h9"/><path d="M11.5 9h3M11.5 13h3"/>
+      </svg>
+      <h3 class="display">Host</h3>
+      <p>Live Events • Entertainment • Cultural Programming</p>
+      <span class="link-arrow">View hosting work</span>
+    </a>
+    <a class="discipline" href="work.html#commercial">
+      <svg viewBox="0 0 32 32" fill="none" stroke-width="1.4" aria-hidden="true">
+        <path d="M4 10.5h6l2-3.5h8l2 3.5h6V26H4z"/><circle cx="16" cy="17.5" r="5"/>
+      </svg>
+      <h3 class="display">Model</h3>
+      <p>Commercial • Lifestyle • Editorial</p>
+      <span class="link-arrow">View modeling work</span>
+    </a>
+  </div>
 </section>
 
 
@@ -106,47 +143,16 @@
     <div>
       <h2 class="display" id="reel-title">Featured Reel</h2>
       <p>A selection of my best on-camera work, from film and television to commercials and live events.</p>
-      <a class="btn btn--light" href="reel.html">
+      <a class="btn btn--light" href="reels.html">
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>
         Watch Reel
       </a>
     </div>
-    <a href="reel.html" aria-label="Play featured reel">
+    <a href="reels.html" aria-label="Play featured reel">
       <div class="card__media">
         <img src="images/reel.jpg" alt="" loading="lazy">
         <span class="play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg></span>
       </div>
-    </a>
-  </div>
-</section>
-
-
-<!-- ===================== DISCIPLINES ===================== -->
-<section class="container" aria-label="What Malia does">
-  <div class="disciplines">
-    <a class="discipline" href="work.html#acting">
-      <svg viewBox="0 0 32 32" fill="none" stroke-width="1.4" aria-hidden="true">
-        <rect x="4" y="12" width="24" height="15" rx="1"/><path d="M4 12l1.5-6 22.5 2.5-1 3.5"/><path d="M10 6.6l-2 5.4M16.5 7.3l-2 4.7M23 8l-2 4"/><path d="M4 17h24"/>
-      </svg>
-      <h3 class="display">Actor</h3>
-      <p>Film • Television • Commercial • Theatre</p>
-      <span class="link-arrow">View acting work</span>
-    </a>
-    <a class="discipline" href="work.html#hosting">
-      <svg viewBox="0 0 32 32" fill="none" stroke-width="1.4" aria-hidden="true">
-        <rect x="11.5" y="3.5" width="9" height="15" rx="4.5"/><path d="M7.5 14.5a8.5 8.5 0 0017 0M16 23v5.5M11.5 28.5h9"/><path d="M11.5 9h3M11.5 13h3"/>
-      </svg>
-      <h3 class="display">Host</h3>
-      <p>Live Events • Entertainment • Cultural Programming</p>
-      <span class="link-arrow">View hosting work</span>
-    </a>
-    <a class="discipline" href="work.html#modeling">
-      <svg viewBox="0 0 32 32" fill="none" stroke-width="1.4" aria-hidden="true">
-        <path d="M4 10.5h6l2-3.5h8l2 3.5h6V26H4z"/><circle cx="16" cy="17.5" r="5"/>
-      </svg>
-      <h3 class="display">Model</h3>
-      <p>Commercial • Lifestyle • Editorial</p>
-      <span class="link-arrow">View modeling work</span>
     </a>
   </div>
 </section>

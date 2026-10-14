@@ -207,7 +207,7 @@ h1, h2, h3, p { margin: 0; }
   text-transform: uppercase;
   white-space: nowrap;
 }
-.nav { display: flex; align-items: center; gap: clamp(14px, 2vw, 28px); }
+.nav { display: flex; align-items: center; gap: clamp(18px, 2.6vw, 36px); }
 .nav a:not(.btn) {
   font-family: var(--font-caps);
   font-size: .66rem;
@@ -221,7 +221,8 @@ h1, h2, h3, p { margin: 0; }
 .nav a:not(.btn):hover,
 .nav a[aria-current="page"] { opacity: 1; border-bottom-color: currentColor; }
 .nav .btn { margin-left: .5rem; background: rgba(21,48,47,.55); border-color: rgba(244,240,232,.45); color: var(--on-dark); }
-.nav .btn:hover { background: var(--on-dark); color: var(--teal-900); }
+.nav .btn:hover,
+.nav .btn[aria-current="page"] { background: var(--on-dark); color: var(--teal-900); border-color: var(--on-dark); }
 
 .menu-toggle {             /* hamburger, phones only */
   display: none;
@@ -384,6 +385,31 @@ a:hover .play { transform: scale(1.08); background: rgba(21,48,47,.5); }
   opacity: .95;
 }
 
+/* --- About lead-in above the disciplines (sits directly under the hero) ---
+   Sized as a lead-in to the columns rather than a headline, and centered
+   so it lines up with the centered column content below it. */
+.about-disciplines { padding-top: clamp(44px, 6vw, 72px); }
+.about-lead {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  padding-bottom: clamp(28px, 4vw, 44px);
+  text-align: center;
+}
+.about-lead .eyebrow { color: var(--ink-soft); }
+.about-lead .eyebrow::after {
+  content: ""; display: block;
+  width: 36px; height: 1px; margin: 14px auto 0;
+  background: var(--teal-600);
+}
+.about-lead__text {
+  max-width: 36em;
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 1.8vw, 1.45rem);
+  line-height: 1.5;
+  text-wrap: balance;
+}
+
 /* --- Featured reel band --- */
 .reel-band { background: var(--teal-800); color: var(--on-dark); }
 .reel-band .container {
@@ -442,7 +468,6 @@ a:hover .play { transform: scale(1.08); background: rgba(21,48,47,.5); }
 /* Tablet: tighten desktop nav, 3-up card rows */
 @media (max-width: 1024px) {
   .rail { --cols: 3; }
-  .nav .btn { display: none; }
 }
 
 /* Phone (matches the mobile mockup) */
@@ -460,7 +485,7 @@ a:hover .play { transform: scale(1.08); background: rgba(21,48,47,.5); }
     z-index: -1;
   }
   .nav a:not(.btn) { font-size: .85rem; }
-  .nav .btn { display: inline-flex; margin: 10px 0 0; }
+  .nav .btn { display: inline-flex; margin: 10px 0 0; min-height: 44px; padding: .7em 2em; font-size: .72rem; }
   .menu-open .nav { transform: none; visibility: visible; transition-delay: 0s; }
   .menu-open { overflow: hidden; }
 
@@ -477,6 +502,11 @@ a:hover .play { transform: scale(1.08); background: rgba(21,48,47,.5); }
   .hero__actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .hero__actions .btn { min-width: 0; }
   .hero__actions .btn:first-child { grid-column: 1 / -1; }
+
+  /* About lead-in: left-aligned is easier to read on a narrow screen */
+  .about-lead { text-align: left; justify-items: start; }
+  .about-lead .eyebrow::after { margin-left: 0; }
+  .about-lead__text { font-size: 1.12rem; text-wrap: pretty; }
 
   /* Card rows → swipeable rails with ~2 cards visible */
   .rail {
@@ -515,4 +545,318 @@ a:hover .play { transform: scale(1.08); background: rgba(21,48,47,.5); }
   .footer-cta { order: -1; }
   .social { justify-content: center; }
   .footer-bottom { justify-content: center; text-align: center; }
+}
+
+
+/* ==========================================================================
+   7. INNER PAGES (About, Work, Reel, Photos, Press, Contact)
+   Inner pages have no full-bleed photo behind the header, so the header
+   switches to dark text on the cream background.
+   ========================================================================== */
+.site-header--solid {
+  position: relative;
+  color: var(--ink);
+  border-bottom: 1px solid var(--line);
+}
+.site-header--solid .nav .btn { background: transparent; border-color: var(--ink); color: var(--ink); }
+.site-header--solid .nav .btn:hover,
+.site-header--solid .nav .btn[aria-current="page"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+/* Page title block shared by inner pages */
+.page-head { padding-top: clamp(40px, 7vw, 88px); }
+.page-head h1 { font-size: clamp(2.4rem, 5vw, 3.6rem); }
+.page-head p { margin-top: 14px; max-width: 46ch; color: var(--ink-soft); }
+
+/* Slim footer for inner pages that already show contact details */
+.site-footer--slim .footer-bottom { border-top: 0; padding-block: 22px; }
+
+
+/* ==========================================================================
+   8. CONTACT PAGE
+   One centered column (~620px) so the form is easy to scan, with the
+   representation details directly below it, as requested.
+   ========================================================================== */
+.contact { max-width: calc(620px + var(--gutter) * 2); }
+.contact .page-head p { margin-inline: 0; }
+
+/* --- Form --- */
+.contact-form { display: grid; gap: 20px; margin-top: 36px; }
+
+.field { display: grid; gap: 8px; }
+.field label {                        /* visible labels, not just placeholders:
+                                         they stay readable after someone types */
+  font-family: var(--font-caps);
+  font-size: .64rem;
+  font-weight: 600;
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+}
+.field label .opt { font-weight: 500; color: var(--ink-soft); letter-spacing: .08em; text-transform: none; }
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--ink);
+  font: 16px/1.5 var(--font-body);   /* 16px stops iPhones zooming in on focus */
+  transition: border-color .2s, box-shadow .2s;
+}
+.field textarea { min-height: 170px; resize: vertical; }
+.field input::placeholder,
+.field textarea::placeholder { color: #9a9a92; }
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--teal-600);
+  box-shadow: 0 0 0 3px rgba(44, 90, 85, .15);
+}
+/* Only flag errors after the visitor has tried to submit */
+.was-submitted .field :invalid { border-color: #a5483a; }
+
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+.hp { position: absolute; left: -9999px; }   /* spam honeypot, hidden from people */
+
+.contact-form .btn--send { width: 100%; min-height: 52px; font-size: .72rem; }
+.contact-form .btn--send[disabled] { opacity: .6; cursor: wait; }
+
+.form-status { min-height: 1.5em; font-size: .9rem; text-align: center; }
+.form-status.is-success { color: var(--teal-600); }
+.form-status.is-error { color: #a5483a; }
+
+/* --- Representation --- */
+.representation {
+  margin-top: clamp(48px, 7vw, 72px);
+  padding-top: 32px;
+  border-top: 1px solid var(--line);
+}
+.representation .section-title { margin-bottom: 20px; }
+.rep-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+.rep-card {
+  display: grid; gap: 4px; align-content: start;
+  padding: 22px 24px;
+  background: var(--card);
+  border: 1px solid var(--line);
+}
+.rep-card .eyebrow { font-size: .64rem; color: var(--ink-soft); margin-bottom: 6px; }
+.rep-card h3 { font-family: var(--font-display); font-size: 1.3rem; font-weight: 500; }
+.rep-card p, .rep-card a { font-size: .9rem; }
+.rep-card a { text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px; }
+.rep-card a:hover { text-decoration-color: currentColor; }
+
+.contact-social { display: flex; align-items: center; gap: 22px; margin-top: 28px; color: var(--ink); }
+.contact-social .social a { color: var(--ink); }
+
+
+/* Inner pages on phones */
+@media (max-width: 760px) {
+  /* Open menu is teal, so its links and the close icon switch to light */
+  .site-header--solid .nav { color: var(--on-dark); }
+  .site-header--solid .nav .btn { border-color: var(--on-dark); color: var(--on-dark); }
+  .site-header--solid .nav .btn[aria-current="page"] { background: var(--on-dark); color: var(--teal-900); border-color: var(--on-dark); }
+  .menu-open .site-header--solid { color: var(--on-dark); border-bottom-color: transparent; }
+
+  .field-row { grid-template-columns: 1fr; }
+  .contact-social { justify-content: center; }
+}
+
+
+/* ==========================================================================
+   9. PRESS PAGE
+   Same .press-card component as the homepage, laid out as a grid and given
+   a bit more room: type + date, and a "Read article" link at the bottom.
+   ========================================================================== */
+.press-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: clamp(32px, 5vw, 48px);
+}
+
+.press-grid .press-card {
+  min-height: 250px;
+  padding: 26px 26px 22px;
+  gap: 14px;
+  transition: border-color .25s var(--ease), box-shadow .25s var(--ease), transform .25s var(--ease);
+}
+.press-grid .press-card:hover {
+  border-color: #c8bfae;
+  box-shadow: 0 10px 28px -18px rgba(30, 39, 39, .35);
+  transform: translateY(-2px);
+}
+.press-grid .press-card__quote { font-size: 1.3rem; line-height: 1.35; }
+
+/* Media card fills the same height as the text cards */
+.press-grid .press-card--media { padding: 0; }
+.press-grid .press-card--media .card__media { --ratio: 16 / 8; }
+.press-grid .press-card--media .press-card__body {
+  display: flex; flex-direction: column; gap: 10px; flex: 1;
+  padding: 18px 26px 22px;
+}
+.press-grid .press-card--media .press-card__quote { font-size: 1.15rem; }
+
+/* Type and date, e.g. "Article · March 2026" */
+.press-card__meta { font-size: .76rem; color: var(--ink-soft); }
+.press-card__cta { margin-top: auto; padding-top: 6px; }
+
+/* Wordmark placeholders: three styles so the cards don't all look identical
+   before the real logos go in. Delete once logos are added. */
+.press-card__outlet--serif { font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; }
+.press-card__outlet--bold  { font-family: var(--font-caps); font-weight: 700; font-size: 1.1rem; letter-spacing: .02em; }
+.press-card__outlet--caps  { font-family: var(--font-caps); font-weight: 500; font-size: .95rem; letter-spacing: .14em; text-transform: uppercase; }
+.press-card__outlet--caps small { font-size: .45em; letter-spacing: .25em; vertical-align: super; margin-left: .3em; }
+
+/* Closing prompt for journalists */
+.press-cta {
+  display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;
+  margin-block: clamp(48px, 7vw, 72px);
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+}
+.press-cta p { font-family: var(--font-display); font-size: 1.25rem; }
+
+@media (max-width: 1024px) {
+  .press-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  .press-grid { grid-template-columns: 1fr; gap: 14px; }
+  .press-grid .press-card { min-height: 0; padding: 22px; }
+  .press-grid .press-card--media { padding: 0; }
+  .press-grid .press-card__quote { font-size: 1.2rem; }
+  .press-cta { flex-direction: column; align-items: flex-start; }
+  .press-cta .btn { width: 100%; }
+}
+
+
+/* ==========================================================================
+   10. WORK PAGE
+   Featured player on top, filter tabs, then a grid of video cards.
+   ========================================================================== */
+.work-page .page-head { padding-bottom: clamp(20px, 3vw, 28px); }
+
+/* --- Featured player --- */
+.player { scroll-margin-top: 16px; }   /* breathing room when a card scrolls back up to it */
+.player__frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--teal-900);
+  box-shadow: 0 24px 48px -32px rgba(21, 48, 47, .55);
+}
+.player__poster,
+.player__frame iframe {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  border: 0;
+}
+.player__poster { object-fit: cover; }
+.player__play {                       /* the whole poster is the play button */
+  position: absolute; inset: 0;
+  border: 0; padding: 0;
+  background: linear-gradient(0deg, rgba(14,34,33,.35), rgba(14,34,33,0) 45%);
+  cursor: pointer;
+}
+.player__play .play { width: 78px; height: 78px; border-width: 2px; }
+.player__play .play svg { width: 26px; height: 26px; }
+.player__play:hover .play { transform: scale(1.08); background: rgba(21,48,47,.5); }
+
+.player__info { padding-top: 16px; }
+.player__title { font-family: var(--font-display); font-weight: 500; font-size: clamp(1.3rem, 2vw, 1.6rem); }
+.player__meta { font-size: .85rem; color: var(--ink-soft); margin-top: 2px; }
+
+/* --- Filter tabs ---
+   Small tracked caps like the nav; the active one fills in teal. */
+.filters {
+  display: flex; justify-content: center; flex-wrap: wrap; gap: 8px;
+  margin-block: clamp(32px, 5vw, 48px) clamp(24px, 3.5vw, 36px);
+}
+.filter {
+  min-height: 40px;
+  padding: .55em 1.3em;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  background: none;
+  color: var(--ink);
+  font-family: var(--font-caps);
+  font-size: .66rem;
+  font-weight: 600;
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background .2s var(--ease), color .2s var(--ease), border-color .2s var(--ease);
+}
+.filter:hover { border-color: var(--line); }
+.filter[aria-pressed="true"] { background: var(--teal-800); border-color: var(--teal-800); color: var(--on-dark); }
+
+/* --- Video grid --- */
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(24px, 3vw, 36px) clamp(14px, 2vw, 24px);
+  padding-bottom: var(--section-y);
+}
+.video-card { display: block; }
+.video-card[hidden] { display: none; }
+.video-card .play { width: 46px; height: 46px; opacity: 0; transition: opacity .25s var(--ease), transform .3s var(--ease); }
+.video-card .play svg { width: 16px; height: 16px; }
+.video-card:hover .play,
+.video-card:focus-visible .play,
+.video-card.is-playing .play { opacity: 1; }
+.video-card:hover .card__media img { transform: scale(1.04); }
+.video-card__label {
+  margin-top: 12px;
+  font-family: var(--font-caps);
+  font-size: .6rem;
+  font-weight: 600;
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+  color: var(--teal-600);
+}
+.video-card__title { font-family: var(--font-display); font-weight: 600; font-size: 1.15rem; line-height: 1.3; margin-top: 2px; }
+.video-card.is-playing .video-card__label::after { content: " · Now playing"; color: var(--ink-soft); }
+
+.video-empty { text-align: center; color: var(--ink-soft); padding-bottom: var(--section-y); }
+
+/* Cards fade in when a filter changes */
+@keyframes card-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.video-card.is-entering { animation: card-in .35s var(--ease) both; }
+
+@media (max-width: 1024px) {
+  .video-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  /* Player runs edge to edge on phones so the video is as big as possible */
+  .player { margin-inline: calc(var(--gutter) * -1); }
+  .player__info { padding-inline: var(--gutter); }
+  .player__play .play { width: 62px; height: 62px; }
+
+  /* Tabs scroll sideways instead of wrapping onto two lines */
+  .filters {
+    flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; scrollbar-width: none;
+    margin-inline: calc(var(--gutter) * -1); padding-inline: var(--gutter);
+  }
+  .filters::-webkit-scrollbar { display: none; }
+  .filter { flex: none; padding-inline: .9em; letter-spacing: .14em; }
+
+  /* Compact list on phones: thumbnail left, text right. Keeps all eight
+     videos to a couple of screens instead of eight full-width cards. */
+  .video-grid { grid-template-columns: 1fr; gap: 16px; }
+  .video-card {
+    display: grid;
+    grid-template-columns: 44% 1fr;
+    grid-template-rows: auto auto 1fr;
+    column-gap: 14px;
+    align-items: start;
+  }
+  .video-card .card__media { grid-row: 1 / 4; }
+  .video-card__label { margin-top: 2px; }
+  .video-card__title { font-size: 1.05rem; }
+  .video-card .play { opacity: 1; width: 36px; height: 36px; }   /* no hover on touch, so always visible */
+  .video-card .play svg { width: 13px; height: 13px; }
+  .video-card.is-playing .video-card__label::after { content: " · Playing"; }
 }
