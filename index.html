@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Malia Aiello — Actor, Host &amp; Model | Hawaiʻi &amp; Los Angeles</title>
+  <meta name="description" content="Malia Aiello is a Native Hawaiian actor, host and model based in Oʻahu and Los Angeles. Watch her reel, see recent work and press, and get in touch for bookings.">
+
+  <!-- Social share preview. TODO: replace image with a 1200×630 hosted photo -->
+  <meta property="og:title" content="Malia Aiello — Actor, Host &amp; Model">
+  <meta property="og:description" content="Real stories. Big dreams. Hawaiʻi roots.">
+  <meta property="og:image" content="https://malianaiello.com/images/og-share.jpg">
+
+  <!-- Fonts: preconnect first so the font files start downloading sooner -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Lato:wght@400;700&family=Montserrat:wght@500;600;700&family=Sacramento&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<!-- ===================== HEADER ===================== -->
+<header class="site-header">
+  <div class="container">
+    <a class="logo" href="index.html">Malia Aiello</a>
+
+    <button class="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="site-nav"><span></span></button>
+
+    <nav class="nav" id="site-nav" aria-label="Main">
+      <a href="index.html" aria-current="page">Home</a>
+      <a href="about.html">About</a>
+      <a href="work.html">Work</a>
+      <a href="reel.html">Reel</a>
+      <a href="photos.html">Photos</a>
+      <a href="press.html">Press</a>
+      <a href="contact.html">Contact</a>
+      <a class="btn btn--pill btn--small" href="contact.html">Casting / Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<!-- ===================== HERO =====================
+     Swap the photo by changing the <img> src.
+     --focus / --focus-mobile set which part of the photo stays in frame when it's cropped
+     (first value = horizontal, second = vertical). -->
+<section class="hero" style="--focus: 75% 25%; --focus-mobile: 60% 10%;">
+  <img class="hero__bg" src="images/hero.jpg" alt="" fetchpriority="high">
+  <div class="container">
+    <p class="eyebrow">Actor &nbsp;/&nbsp; Host &nbsp;/&nbsp; Model</p>
+    <h1 class="display hero__name">Malia Aiello</h1>
+    <p class="eyebrow hero__sub">Hawaiʻi &nbsp;/&nbsp; Los Angeles &nbsp;/&nbsp; Available worldwide</p>
+
+    <div class="hero__actions">
+      <a class="btn btn--solid" href="reel.html">Watch Reel</a>
+      <a class="btn btn--light" href="work.html">View Work</a>
+      <a class="btn btn--light" href="contact.html">Contact</a>
+    </div>
+  </div>
+  <p class="hero__script" aria-hidden="true">Real stories.<br>Big dreams.<br>Hawaiʻi roots.</p>
+</section>
+
+
+<!-- ===================== NOW STREAMING ===================== -->
+<section class="section" aria-labelledby="streaming-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 class="section-title" id="streaming-title">Now Streaming</h2>
+      <a class="link-arrow" href="work.html">View all work</a>
+    </div>
+
+    <div class="rail" style="--cols: 4">
+      <!-- Copy one <a class="card"> block per project. Link to where people can watch it. -->
+      <a class="card" href="#">
+        <div class="card__media"><img src="images/streaming-1.jpg" alt="Malia in a still from Do I Shock U Like Lightning" loading="lazy"></div>
+        <h3 class="card__title">Do I Shock U Like Lightning</h3>
+        <p class="card__meta">Amazon Prime + Apple TV+</p>
+      </a>
+      <a class="card" href="#">
+        <div class="card__media"><img src="images/streaming-2.jpg" alt="Malia in a scene from NCIS: Hawaiʻi" loading="lazy"></div>
+        <h3 class="card__title">NCIS: Hawaiʻi</h3>
+        <p class="card__meta">CBS</p>
+      </a>
+      <a class="card" href="#">
+        <div class="card__media"><img src="images/streaming-3.jpg" alt="Malia in a Kona Brewing commercial" loading="lazy"></div>
+        <h3 class="card__title">Kona Brewing</h3>
+        <p class="card__meta">Commercial</p>
+      </a>
+      <a class="card" href="#">
+        <div class="card__media"><img src="images/streaming-4.jpg" alt="Malia in a Zippy's commercial" loading="lazy"></div>
+        <h3 class="card__title">Zippy's</h3>
+        <p class="card__meta">Commercial</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===================== FEATURED REEL =====================
+     The thumbnail links to the reel page, which embeds the Vimeo video.
+     Keeping the video off the homepage keeps the first load fast. -->
+<section class="section reel-band" aria-labelledby="reel-title">
+  <div class="container">
+    <div>
+      <h2 class="display" id="reel-title">Featured Reel</h2>
+      <p>A selection of my best on-camera work, from film and television to commercials and live events.</p>
+      <a class="btn btn--light" href="reel.html">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>
+        Watch Reel
+      </a>
+    </div>
+    <a href="reel.html" aria-label="Play featured reel">
+      <div class="card__media">
+        <img src="images/reel.jpg" alt="" loading="lazy">
+        <span class="play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg></span>
+      </div>
+    </a>
+  </div>
+</section>
+
+
+<!-- ===================== DISCIPLINES ===================== -->
+<section class="container" aria-label="What Malia does">
+  <div class="disciplines">
+    <a class="discipline" href="work.html#acting">
+      <svg viewBox="0 0 32 32" fill="none" stroke-width="1.4" aria-hidden="true">
+        <rect x="4" y="12" width="24" height="15" rx="1"/><path d="M4 12l1.5-6 22.5 2.5-1 3.5"/><path d="M10 6.6l-2 5.4M16.5 7.3l-2 4.7M23 8l-2 4"/><path d="M4 17h24"/>
+      </svg>
+      <h3 class="display">Actor</h3>
+      <p>Film • Television • Commercial • Theatre</p>
+      <span class="link-arrow">View acting work</span>
+    </a>
+    <a class="discipline" href="work.html#hosting">
+      <svg viewBox="0 0 32 32" fill="none" stroke-width="1.4" aria-hidden="true">
+        <rect x="11.5" y="3.5" width="9" height="15" rx="4.5"/><path d="M7.5 14.5a8.5 8.5 0 0017 0M16 23v5.5M11.5 28.5h9"/><path d="M11.5 9h3M11.5 13h3"/>
+      </svg>
+      <h3 class="display">Host</h3>
+      <p>Live Events • Entertainment • Cultural Programming</p>
+      <span class="link-arrow">View hosting work</span>
+    </a>
+    <a class="discipline" href="work.html#modeling">
+      <svg viewBox="0 0 32 32" fill="none" stroke-width="1.4" aria-hidden="true">
+        <path d="M4 10.5h6l2-3.5h8l2 3.5h6V26H4z"/><circle cx="16" cy="17.5" r="5"/>
+      </svg>
+      <h3 class="display">Model</h3>
+      <p>Commercial • Lifestyle • Editorial</p>
+      <span class="link-arrow">View modeling work</span>
+    </a>
+  </div>
+</section>
+
+
+<!-- ===================== FEATURED WORK ===================== -->
+<section class="section" aria-labelledby="work-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 class="section-title" id="work-title">Featured Work</h2>
+      <a class="link-arrow" href="work.html">View all work</a>
+    </div>
+
+    <div class="rail" style="--cols: 5; --ratio: 4 / 3">
+      <a class="card" href="#">
+        <div class="card__media"><img src="images/work-1.jpg" alt="Malia on set of NCIS: Hawaiʻi" loading="lazy"></div>
+        <h3 class="card__title">NCIS: Hawaiʻi</h3><p class="card__meta">TV</p>
+      </a>
+      <a class="card" href="#">
+        <div class="card__media"><img src="images/work-2.jpg" alt="Malia in Do I Shock U Like Lightning" loading="lazy"></div>
+        <h3 class="card__title">Do I Shock U Like Lightning</h3><p class="card__meta">Film</p>
+      </a>
+      <a class="card" href="#">
+        <div class="card__media"><img src="images/work-3.jpg" alt="Kona Brewing commercial still" loading="lazy"></div>
+        <h3 class="card__title">Kona Brewing</h3><p class="card__meta">Commercial</p>
+      </a>
+      <a class="card" href="#">
+        <div class="card__media"><img src="images/work-4.jpg" alt="Malia in a Uniqlo campaign" loading="lazy"></div>
+        <h3 class="card__title">Uniqlo</h3><p class="card__meta">Commercial</p>
+      </a>
+      <a class="card" href="#">
+        <div class="card__media"><img src="images/work-5.jpg" alt="Honolulu Cookie Company commercial still" loading="lazy"></div>
+        <h3 class="card__title">Honolulu Cookie Company</h3><p class="card__meta">Commercial</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===================== IN THE PRESS =====================
+     The outlet names are text for now. Swap each for the outlet's real logo:
+     <span class="press-card__outlet"><img src="images/logo-star-advertiser.svg" alt="Star-Advertiser"></span>
+     Only quote headlines/lines that actually ran in the article. -->
+<section class="section press" aria-labelledby="press-title" style="padding-top: 0">
+  <div class="container">
+    <div class="section-head">
+      <h2 class="section-title" id="press-title">In the Press</h2>
+      <a class="link-arrow" href="press.html">All press</a>
+    </div>
+
+    <div class="rail rail--press" style="--cols: 4">
+      <a class="press-card" href="#">
+        <span class="press-card__outlet">Star-Advertiser</span>
+        <p class="press-card__quote">“Malia Aiello brings Hawaiʻi's spirit to the screen”</p>
+        <span class="press-card__source">Star-Advertiser</span>
+      </a>
+      <a class="press-card" href="#">
+        <span class="press-card__outlet">KITV4</span>
+        <p class="press-card__quote">Local talent shines in new Amazon series</p>
+        <span class="press-card__source">KITV4</span>
+      </a>
+      <a class="press-card" href="#">
+        <span class="press-card__outlet">Hawaiʻi Magazine</span>
+        <p class="press-card__quote">From Oʻahu to Hollywood</p>
+        <span class="press-card__source">Hawaiʻi Magazine</span>
+      </a>
+      <a class="press-card press-card--media" href="#">
+        <div class="card__media">
+          <img src="images/press-video.jpg" alt="" loading="lazy">
+          <span class="play" aria-hidden="true" style="width:40px;height:40px"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg></span>
+        </div>
+        <div class="press-card__body">
+          <span class="press-card__quote" style="font-size:.95rem">Watch: Malia hosts Honolulu Awakened</span>
+          <span class="press-card__source">Honolulu Awakened</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===================== UP NEXT ===================== -->
+<section class="up-next" aria-labelledby="next-title">
+  <div class="up-next__grid">
+    <img class="up-next__image" src="images/up-next.jpg" alt="Malia hosting an outdoor event, wearing a lei" loading="lazy">
+    <div class="up-next__body">
+      <h2 class="section-title" id="next-title">Up Next</h2>
+      <div class="up-next__cards">
+        <div class="next-card">
+          <h3>Win the City</h3>
+          <p>Host</p>
+          <p>2026</p>
+          <a class="btn btn--small" href="#">Learn more</a>
+        </div>
+        <div class="next-card">
+          <h3>Next Acting Project</h3>
+          <p>Coming soon</p>
+          <a class="btn btn--small" href="#">Stay tuned</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-col">
+      <h3 class="eyebrow">Representation</h3>
+      <p>Bliss Models &amp; Talent<br>Lashauna</p>
+      <a href="mailto:lashauna@blissmodels.com">lashauna@blissmodels.com</a>
+    </div>
+
+    <div class="footer-col footer-cta">
+      <h2 class="section-title">Let's Work Together</h2>
+      <p>For bookings and casting inquiries, use the contact form or email
+        <a href="mailto:malia@malianaiello.com">malia@malianaiello.com</a></p>
+      <a class="btn btn--light btn--pill" href="contact.html">Contact Me</a>
+    </div>
+
+    <div class="footer-col">
+      <h3 class="eyebrow">Follow</h3>
+      <div class="social">
+        <a href="https://instagram.com/" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor"/></svg>
+        </a>
+        <a class="imdb" href="https://www.imdb.com/" aria-label="IMDb">IMDb</a>
+        <a href="mailto:malia@malianaiello.com" aria-label="Email">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5.5" width="18" height="13" rx="1"/><path d="M3.5 6l8.5 7 8.5-7"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container footer-bottom">
+    <span>© <span id="year">2026</span> Malia Aiello. All rights reserved.</span>
+    <nav aria-label="Profiles">
+      <a href="https://www.imdb.com/">IMDb</a>
+      <a href="#">Actors Access</a>
+      <a href="https://instagram.com/">Instagram</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="js/main.js" defer></script>
+</body>
+</html>
