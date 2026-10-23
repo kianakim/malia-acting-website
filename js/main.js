@@ -129,14 +129,17 @@ function makeVideoFrame(link, title) {
   return frame;
 }
 
-// 4. Headshots carousel
-//    The strip scrolls by swipe or trackpad on its own; the arrows move one
-//    photo at a time, dim at either end, and a thin bar shows the position.
-document.querySelectorAll('.headshots').forEach((section) => {
+// 4. Photo strips: Headshots and Behind the Scenes
+//    Each strip scrolls by swipe or trackpad on its own; the arrows move one
+//    card at a time, dim at either end, and a thin bar shows the position.
+//    Tapping a card opens the full-size viewer: a photo, a short clip (with
+//    controls), or an unlisted YouTube video if the card has data-youtube.
+document.querySelectorAll('.headshots, .bts').forEach((section) => {
   const track = section.querySelector('.carousel__track');
   const prev = section.querySelector('.carousel__btn--prev');
   const next = section.querySelector('.carousel__btn--next');
   if (!track) return;
+  const items = [...track.querySelectorAll('.headshot, .story')];
 
   const bar = document.createElement('div');
   bar.className = 'carousel__progress';
@@ -167,20 +170,55 @@ document.querySelectorAll('.headshots').forEach((section) => {
   addEventListener('resize', update);
   update();
 
-  // Larger view: click a photo; the arrow buttons or keyboard arrows move between photos; Esc closes
+  // Short clips loop silently, but only while they're actually on screen
+  // (saves data and battery). Visitors who turn off animations see the still.
+  const loops = [...track.querySelectorAll('video.story__media')];
+  let viewerOpen = false;
+  if (loops.length && !reduceMotion && 'IntersectionObserver' in window) {
+    const watcher = new IntersectionObserver((entries) => entries.forEach((e) => {
+      const v = e.target;
+      v.dataset.inView = e.isIntersecting ? '1' : '';
+      if (e.isIntersecting && !viewerOpen) v.play().catch(() => {});   // some browsers refuse; the still stays
+      else v.pause();
+    }), { threshold: 0.6 });
+    loops.forEach((v) => { v.preload = 'metadata'; watcher.observe(v); });
+  }
+  const pauseLoops = () => loops.forEach((v) => v.pause());
+  const resumeLoops = () => { if (!reduceMotion) loops.forEach((v) => { if (v.dataset.inView) v.play().catch(() => {}); }); };
+
+  // Full-size viewer
   const dialog = section.querySelector('.lightbox');
   if (!dialog || typeof dialog.showModal !== 'function') return;
-  const photos = [...track.querySelectorAll('.headshot')];
-  const img = dialog.querySelector('.lightbox__img');
+  const stage = dialog.querySelector('.lightbox__stage');
+  const caption = dialog.querySelector('.lightbox__caption');
   let current = 0;
 
   const show = (n) => {
-    current = (n + photos.length) % photos.length;
-    const thumb = photos[current].querySelector('img');
-    img.src = photos[current].dataset.full || thumb.src;
-    img.alt = thumb.alt;
+    current = (n + items.length) % items.length;
+    const item = items[current];
+    const thumb = item.querySelector('img, video');
+    const label = item.querySelector('.story__caption');
+    let media;
+    const yt = item.dataset.youtube && makeVideoFrame(item.dataset.youtube, label ? label.textContent : 'Video');
+    if (yt) {
+      media = yt;
+    } else if (item.dataset.video) {
+      media = document.createElement('video');
+      Object.assign(media, { src: item.dataset.video, controls: true, autoplay: true, loop: true, playsInline: true });
+      media.poster = thumb.getAttribute('poster') || '';
+      media.setAttribute('aria-label', item.dataset.alt || (label ? label.textContent : 'Clip'));
+    } else {
+      media = document.createElement('img');
+      media.src = item.dataset.full || thumb.src;
+      media.alt = thumb.alt;
+    }
+    stage.replaceChildren(media);              // swapping out the old one also stops any playing video
+    if (caption) caption.textContent = label ? label.textContent : '';
   };
-  photos.forEach((photo, n) => photo.addEventListener('click', () => {
+
+  items.forEach((item, n) => item.addEventListener('click', () => {
+    viewerOpen = true;
+    pauseLoops();
     show(n);
     dialog.showModal();
   }));
@@ -193,9 +231,12 @@ document.querySelectorAll('.headshots').forEach((section) => {
     if (e.key === 'ArrowRight') show(current + 1);
   });
   dialog.addEventListener('close', () => {
-    // bring the photo they were looking at into view in the strip
-    photos[current].scrollIntoView({ behavior, block: 'nearest', inline: 'start' });
-    photos[current].focus({ preventScroll: true });
+    stage.replaceChildren();                   // stops video and YouTube playback
+    viewerOpen = false;
+    resumeLoops();
+    // bring the card they were looking at into view in the strip
+    items[current].scrollIntoView({ behavior, block: 'nearest', inline: 'start' });
+    items[current].focus({ preventScroll: true });
   });
 });
 
@@ -249,3 +290,116 @@ if (player) {
     document.querySelector('.player').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
   }));
 }
+
+// 7. Up Next slides
+//    Each slide flips in after the current one's indicator line fills up
+//    (data-interval on the section). The line pauses, and so does the
+//    carousel, while the pointer is over it, while it has keyboard focus,
+//    while it's scrolled out of view, or after the pause button is pressed.
+//    Visitors who turn off animations start paused and get a fade.
+document.querySelectorAll('.up-next').forEach((root) => {
+  const slides = [...root.querySelectorAll('.up-next__slide')];
+  const controls = root.querySelector('.up-next__controls');
+  if (slides.length < 2) { if (controls) controls.hidden = true; return; }
+
+  const dotsBox = root.querySelector('.up-next__dots');
+  const pauseBtn = root.querySelector('.up-next__pause');
+  const track = root.querySelector('.up-next__slides');
+  const speed = 1000;                                  // flip length in ms (matches --speed)
+  let current = 0;
+  let busy = false;
+
+  root.style.setProperty('--interval', (Number(root.dataset.interval) || 6000) + 'ms');
+  root.style.setProperty('--speed', speed + 'ms');
+  const setDepth = () => root.style.setProperty('--depth', (root.clientWidth / 2) + 'px');
+  setDepth();
+  addEventListener('resize', setDepth);
+
+  // One indicator per slide
+  const dots = slides.map((slide, n) => {
+    const name = slide.querySelector('.up-next__name');
+    const dot = document.createElement('button');
+    dot.type = 'button';
+    dot.className = 'up-next__dot';
+    dot.setAttribute('aria-label', `Show slide ${n + 1}${name ? ': ' + name.textContent : ''}`);
+    dot.addEventListener('click', () => go(n));
+    dotsBox.appendChild(dot);
+    return dot;
+  });
+
+  const setVisible = (slide, on) => {
+    slide.inert = !on;                                 // hidden slides can't be tabbed into
+    slide.setAttribute('aria-hidden', String(!on));
+  };
+  const markDot = (n) => dots.forEach((d, i) => {
+    d.removeAttribute('aria-current');
+    if (i === n) { void d.offsetWidth; d.setAttribute('aria-current', 'true'); }   // restarts the fill
+  });
+
+  slides.forEach((s, n) => { s.hidden = false; setVisible(s, n === 0); });
+  slides[0].classList.add('is-active');
+  root.classList.add('is-ready');
+  markDot(0);
+
+  function go(n, dir) {
+    n = (n + slides.length) % slides.length;
+    if (busy || n === current) return;
+    dir = dir || (n > current ? 'next' : 'prev');
+    busy = true;
+    const out = slides[current];
+    const inn = slides[n];
+    const clean = () => {
+      out.classList.remove('is-leaving', 'anim-out-next', 'anim-out-prev');
+      inn.classList.remove('anim-in-next', 'anim-in-prev');
+      setVisible(out, false);
+      busy = false;
+    };
+    out.classList.remove('is-active');
+    out.classList.add('is-leaving', 'anim-out-' + dir);
+    inn.classList.add('is-active', 'anim-in-' + dir);
+    setVisible(inn, true);
+    current = n;
+    markDot(n);
+    let done = false;
+    const finish = () => { if (!done) { done = true; clean(); } };
+    inn.addEventListener('animationend', finish, { once: true });
+    setTimeout(finish, speed + 150);                   // safety net if no animation runs
+  }
+
+  // Auto-advance when the current indicator finishes filling
+  dotsBox.addEventListener('animationend', (e) => {
+    if (e.target === dots[current]) go(current + 1, 'next');
+  });
+
+  // Pause button
+  const setPaused = (on) => {
+    root.classList.toggle('is-paused', on);
+    pauseBtn.setAttribute('aria-label', on ? 'Play slides' : 'Pause slides');
+    track.setAttribute('aria-live', on ? 'polite' : 'off');   // announce changes only when not rotating
+  };
+  pauseBtn.addEventListener('click', () => setPaused(!root.classList.contains('is-paused')));
+  setPaused(reduceMotion);
+
+  // Hold while hovered or focused; pause while off screen
+  root.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') root.classList.add('is-held'); });
+  root.addEventListener('pointerleave', () => root.classList.remove('is-held'));
+  root.addEventListener('focusin', () => root.classList.add('is-held'));
+  root.addEventListener('focusout', (e) => { if (!root.contains(e.relatedTarget)) root.classList.remove('is-held'); });
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(([entry]) => root.classList.toggle('is-offscreen', !entry.isIntersecting), { threshold: 0.4 }).observe(root);
+  }
+
+  // Swipe on touch screens, arrow keys when the carousel has focus
+  let startX = null;
+  root.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; }, { passive: true });
+  root.addEventListener('touchend', (e) => {
+    if (startX === null) return;
+    const dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) > 40) go(current + (dx < 0 ? 1 : -1), dx < 0 ? 'next' : 'prev');
+    startX = null;
+  });
+  root.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') go(current + 1, 'next');
+    if (e.key === 'ArrowLeft') go(current - 1, 'prev');
+  });
+});

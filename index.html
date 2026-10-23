@@ -112,9 +112,9 @@
      version of the same photo (e.g. 1600px tall) for that larger view. -->
 <section class="headshots" id="headshots" aria-labelledby="headshots-title">
   <div class="container">
-    <div class="headshots__head">
+    <div class="carousel-head">
       <h2 class="line-title line-title--dark" id="headshots-title">Headshots</h2>
-      <div class="headshots__controls">
+      <div class="carousel-controls">
         <button class="carousel__btn carousel__btn--prev" type="button" aria-label="Previous headshots">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
         </button>
@@ -162,7 +162,7 @@
 
   <!-- Larger view, opened by clicking a headshot -->
   <dialog class="lightbox" aria-label="Headshot, larger view">
-    <img class="lightbox__img" src="" alt="">
+    <div class="lightbox__stage"></div>
     <button class="lightbox__btn lightbox__btn--prev" type="button" aria-label="Previous headshot">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
     </button>
@@ -342,6 +342,103 @@
 </section>
 
 
+<!-- ===================== BEHIND THE SCENES (stories strip) =====================
+     Tall 9:16 cards, like phone stories. Mix photos and short clips; tapping
+     any card opens it full-size.
+
+     PHOTO: copy a <button class="story"> block, set the <img> src (portrait
+       9:16, ~1080×1920 or 540×960) and data-full (can be a bigger version).
+     SHORT CLIP (loops silently while on screen): copy a "story--clip" block.
+       Keep clips about 5–10 seconds, no sound needed, MP4 (H.264), 1–3 MB.
+       Set the <video> src and data-video to the file, and poster to a still
+       from it (shown until the clip starts, and to anyone who has turned off
+       animations on their device).
+     LONGER CLIP (unlisted YouTube or a Short): use a photo block, and add
+       data-youtube="paste the YouTube link" plus the story--clip class so it
+       shows the play badge. It opens in the full-size viewer.
+     CAPTIONS: story__tag is the small line (project or place); story__caption
+       is the main line. Keep both short.
+     Check with each production before posting on-set photos: many are
+       under embargo until the project is released. -->
+<section class="bts" id="behind-the-scenes" aria-labelledby="bts-title">
+  <div class="container">
+    <div class="carousel-head">
+      <div>
+        <h2 class="line-title" id="bts-title">Behind the Scenes</h2>
+        <p class="bts__intro">On set, in the chair and between takes.</p>
+      </div>
+      <div class="carousel-controls">
+        <button class="carousel__btn carousel__btn--prev" type="button" aria-label="Previous">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+        </button>
+        <button class="carousel__btn carousel__btn--next" type="button" aria-label="Next">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="carousel">
+      <div class="carousel__track" tabindex="0" aria-label="Behind the scenes photos and clips, scroll sideways for more">
+        <button class="story story--clip" type="button" data-video="video/bts-clip-1.mp4" data-alt="Malia between takes on a beach set" aria-label="Play clip: Golden hour on set">
+          <video class="story__media" src="video/bts-clip-1.mp4" poster="images/bts/clip-1.jpg" muted loop playsinline preload="none" aria-hidden="true"></video>
+          <span class="story__badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg></span>
+          <span class="story__text"><span class="story__tag">Commercial shoot</span><span class="story__caption">Golden hour on set</span></span>
+        </button>
+        <button class="story" type="button" data-full="images/bts/bts-1.jpg" aria-label="View photo: Hosting live">
+          <img class="story__media" src="images/bts/bts-1.jpg" alt="Malia on stage with a microphone" loading="lazy">
+          <span class="story__text"><span class="story__tag">Honolulu Awakened</span><span class="story__caption">Hosting live</span></span>
+        </button>
+        <button class="story" type="button" data-full="images/bts/bts-6.jpg" aria-label="View photo: Blocking a scene">
+          <img class="story__media" src="images/bts/bts-6.jpg" alt="Malia on set in costume" loading="lazy">
+          <span class="story__text"><span class="story__tag">NCIS: Hawaiʻi</span><span class="story__caption">Blocking a scene</span></span>
+        </button>
+        <button class="story story--clip" type="button" data-video="video/bts-clip-2.mp4" data-alt="Malia in hair and makeup, flower in her hair" aria-label="Play clip: Hair & makeup">
+          <video class="story__media" src="video/bts-clip-2.mp4" poster="images/bts/clip-2.jpg" muted loop playsinline preload="none" aria-hidden="true"></video>
+          <span class="story__badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg></span>
+          <span class="story__text"><span class="story__tag">5am call time</span><span class="story__caption">Hair & makeup</span></span>
+        </button>
+        <button class="story" type="button" data-full="images/bts/bts-2.jpg" aria-label="View photo: Mic check">
+          <img class="story__media" src="images/bts/bts-2.jpg" alt="Malia testing a microphone before a show" loading="lazy">
+          <span class="story__text"><span class="story__tag">Win the City</span><span class="story__caption">Mic check</span></span>
+        </button>
+        <button class="story" type="button" data-full="images/bts/bts-5.jpg" aria-label="View photo: Between segments">
+          <img class="story__media" src="images/bts/bts-5.jpg" alt="Malia hosting outdoors, wearing a lei" loading="lazy">
+          <span class="story__text"><span class="story__tag">Live event</span><span class="story__caption">Between segments</span></span>
+        </button>
+        <button class="story story--clip" type="button" data-video="video/bts-clip-3.mp4" data-alt="Malia on the beach during a wardrobe test" aria-label="Play clip: Wardrobe test">
+          <video class="story__media" src="video/bts-clip-3.mp4" poster="images/bts/clip-3.jpg" muted loop playsinline preload="none" aria-hidden="true"></video>
+          <span class="story__badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg></span>
+          <span class="story__text"><span class="story__tag">Swim campaign</span><span class="story__caption">Wardrobe test</span></span>
+        </button>
+        <button class="story" type="button" data-full="images/bts/bts-3.jpg" aria-label="View photo: Press day">
+          <img class="story__media" src="images/bts/bts-3.jpg" alt="Malia at a press event" loading="lazy">
+          <span class="story__text"><span class="story__tag">Hawaiʻi Magazine</span><span class="story__caption">Press day</span></span>
+        </button>
+        <button class="story" type="button" data-full="images/bts/bts-4.jpg" aria-label="View photo: With the cast">
+          <img class="story__media" src="images/bts/bts-4.jpg" alt="Malia with castmates on set" loading="lazy">
+          <span class="story__text"><span class="story__tag">Do I Shock U Like Lightning</span><span class="story__caption">With the cast</span></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Full-size view, opened by tapping a card -->
+  <dialog class="lightbox" aria-label="Behind the scenes, full-size view">
+    <div class="lightbox__stage"></div>
+    <p class="lightbox__caption"></p>
+    <button class="lightbox__btn lightbox__btn--prev" type="button" aria-label="Previous">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+    </button>
+    <button class="lightbox__btn lightbox__btn--next" type="button" aria-label="Next">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+    </button>
+    <button class="lightbox__close" type="button" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
+    </button>
+  </dialog>
+</section>
+
+
 <!-- ===================== PRESS =====================
      ONE CARD PER ARTICLE OR SEGMENT. To add one, copy a whole <a class="press-card"> block.
      Newest first works best.
@@ -417,67 +514,122 @@
 </section>
 
 
-<!-- ===================== UP NEXT ===================== -->
-<section class="up-next" aria-labelledby="next-title">
-  <img class="up-next__photo" src="images/up-next.jpg" alt="" loading="lazy">
-  <div class="container up-next__inner">
-    <h2 class="line-title" id="next-title">Up Next</h2>
+<!-- ===================== UP NEXT (rotating slides) =====================
+     Each slide is one upcoming project: its own wide photo and text, in the
+     same layout. The band flips left to the next slide every 6 seconds,
+     pauses while someone hovers over it or uses the controls, and can be
+     paused with the button. Visitors who turn off animations on their
+     device get a gentle fade and no auto-advance.
 
-    <div class="up-next__item">
-      <h3 class="up-next__name">Win the City</h3>
-      <p>Host</p>
-      <p>2026</p>
+     ADD A SLIDE: copy a whole <div class="up-next__slide"> block (and give
+     every slide after the first the word hidden, as below). The dots and
+     the "1 of 3" labels update on their own.
+     PHOTOS: wide images (about 3:1 or wider, ~2400px across) with Malia
+     toward the right. --focus / --focus-mobile choose what stays in frame
+     (horizontal %, vertical %); phones show a 4:3 crop around her face.
+     TIMING / EFFECT: data-interval is in milliseconds. data-transition can
+     be "flip" (turns like a cube) or "slide" (slides straight across). -->
+<section class="up-next" id="up-next" aria-label="Up next" aria-roledescription="carousel" data-interval="6000" data-transition="flip">
+  <div class="up-next__slides">
+    <div class="up-next__slide" role="group" aria-roledescription="slide" aria-label="1 of 3" style="--focus: 72% 40%; --focus-mobile: 87% 40%;">
+      <img class="up-next__photo" src="images/up-next.jpg" alt="" loading="lazy">
+      <div class="container up-next__inner">
+        <h2 class="line-title">Up Next</h2>
+        <div class="up-next__item">
+          <h3 class="up-next__name">Win the City</h3>
+          <p>Host</p>
+          <p>2026</p>
+        </div>
+        <a class="up-next__soon" href="#">
+          <span class="eyebrow">Coming soon</span>
+          <svg viewBox="0 0 170 16" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M0 8h168M161 1l7 7-7 7"/></svg>
+        </a>
+      </div>
     </div>
+    <div class="up-next__slide" role="group" aria-roledescription="slide" aria-label="2 of 3" style="--focus: 72% 30%; --focus-mobile: 73% 30%;" hidden>
+      <img class="up-next__photo" src="images/up-next-2.jpg" alt="" loading="lazy">
+      <div class="container up-next__inner">
+        <h2 class="line-title">Up Next</h2>
+        <div class="up-next__item">
+          <h3 class="up-next__name">Next Acting Project</h3>
+          <p>Actor</p>
+          <p>TBA</p>
+        </div>
+        <a class="up-next__soon" href="#">
+          <span class="eyebrow">Coming soon</span>
+          <svg viewBox="0 0 170 16" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M0 8h168M161 1l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="up-next__slide" role="group" aria-roledescription="slide" aria-label="3 of 3" style="--focus: 74% 30%; --focus-mobile: 76% 25%;" hidden>
+      <img class="up-next__photo" src="images/up-next-3.jpg" alt="" loading="lazy">
+      <div class="container up-next__inner">
+        <h2 class="line-title">Up Next</h2>
+        <div class="up-next__item">
+          <h3 class="up-next__name">Project Title</h3>
+          <p>Role</p>
+          <p>Year</p>
+        </div>
+        <a class="up-next__soon" href="#">
+          <span class="eyebrow">Learn more</span>
+          <svg viewBox="0 0 170 16" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M0 8h168M161 1l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
 
-    <a class="up-next__soon" href="#">
-      <span class="eyebrow">Coming soon</span>
-      <svg viewBox="0 0 130 16" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M0 8h128M121 1l7 7-7 7"/></svg>
-    </a>
+  <!-- Slide controls (built for the slides above; hidden if there's only one) -->
+  <div class="container up-next__controls">
+    <button class="up-next__pause" type="button" aria-label="Pause slides">
+      <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>
+      <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>
+    </button>
+    <div class="up-next__dots"></div>
   </div>
 </section>
 
 </main>
 
 
-<!-- ===================== FOOTER ===================== -->
+<!-- ===================== FOOTER =====================
+     Single teal band: representation on the left, "Let's Work Together"
+     with the Contact button in the middle, social links on the right. -->
 <footer class="site-footer">
-  <div class="footer-main">
-    <img class="footer-main__photo" src="images/footer-portrait.jpg" alt="" loading="lazy">
-    <div class="container footer-main__inner">
-      <h2 class="line-title">Let's Work Together</h2>
+  <div class="container footer-grid">
+    <div class="footer-col">
+      <h3 class="eyebrow">Representation</h3>
+      <p>Bliss Models &amp; Talent<br>Lashauna</p>
+      <a href="mailto:lashauna@blissmodels.com">lashauna@blissmodels.com</a>
+    </div>
 
-      <div class="footer-cols">
-        <div class="footer-col">
-          <h3 class="footer-label">Representation</h3>
-          <p>Bliss Models &amp; Talent</p>
-          <a href="mailto:lashauna@blissmodels.com">lashauna@blissmodels.com</a>
-        </div>
+    <div class="footer-col footer-cta">
+      <h2 class="section-title">Let's Work Together</h2>
+      <p>For bookings and casting inquiries, use the contact form or email
+        <a href="mailto:malia@malianaiello.com">malia@malianaiello.com</a></p>
+      <a class="btn btn--light btn--pill" href="contact.html">Contact Me</a>
+    </div>
 
-        <div class="footer-col">
-          <h3 class="footer-label">For bookings / casting inquiries</h3>
-          <a class="btn btn--light btn--small" href="contact.html">
-            Contact Me
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 12h15M14 6l6 6-6 6"/></svg>
-          </a>
-        </div>
-
-        <div class="footer-col footer-social">
-          <a href="https://instagram.com/" aria-label="Instagram">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor"/></svg>
-          </a>
-          <a class="footer-social__text" href="https://www.imdb.com/" aria-label="IMDb">IMDb</a>
-          <a class="footer-social__text footer-social__aa" href="#" aria-label="Actors Access">AA</a>
-        </div>
+    <div class="footer-col footer-follow">
+      <h3 class="eyebrow">Follow</h3>
+      <div class="social">
+        <a href="https://instagram.com/" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor"/></svg>
+        </a>
+        <a class="imdb" href="https://www.imdb.com/" aria-label="IMDb">IMDb</a>
+        <a href="mailto:malia@malianaiello.com" aria-label="Email">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="1"/><path d="M3.5 6l8.5 7 8.5-7"/></svg>
+        </a>
       </div>
     </div>
   </div>
 
-  <div class="footer-bar">
-    <div class="container footer-bar__inner">
-      <span class="footer-bar__copy">© <span id="year">2026</span> Malia Aiello</span>
-      <span class="footer-bar__name">Malia Aiello</span>
-      <span class="footer-bar__places">Hawaiʻi &nbsp;/&nbsp; Los Angeles &nbsp;/&nbsp; Worldwide</span>
-    </div>
+  <div class="container footer-bottom">
+    <span>© <span id="year">2026</span> Malia Aiello. All rights reserved.</span>
+    <nav aria-label="Profiles">
+      <a href="https://www.imdb.com/">IMDb</a>
+      <a href="#">Actors Access</a>
+      <a href="https://instagram.com/">Instagram</a>
+    </nav>
   </div>
 </footer>
 

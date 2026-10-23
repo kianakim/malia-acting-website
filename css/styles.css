@@ -25,7 +25,7 @@
   --line:         #d8d0c1;   /* hairlines and dividers */
   --ink:          #1e2727;   /* headings and body text */
   --ink-soft:     #5f6662;   /* captions, meta text */
-  --teal-900:     #15302f;   /* dark bands: Now Streaming, Up Next, footer */
+  --teal-900:     #15302f;   /* dark bands: Up Next, footer */
   --teal-800:     #1c3d3b;   /* active tabs, hero fallback */
   --teal-600:     #2c5a55;   /* primary button fill */
   --on-dark:      #f4f0e8;   /* text on teal / photos */
@@ -309,64 +309,35 @@ a:hover .play { transform: scale(1.08); background: rgba(21,48,47,.5); }
 .social .imdb { font-family: var(--font-caps); font-weight: 700; font-size: .8rem; letter-spacing: .02em; }
 
 /* --- Footer ---
-   Two parts: a dark "Let's Work Together" band with a portrait fading in
-   from the left, then a light bar with her name. Inner pages that already
-   show contact details (the Contact page) use only the light bar. */
-.site-footer { color: var(--on-dark); }
-
-.footer-main {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  background: var(--teal-900);
+   One teal band: representation | "Let's Work Together" + Contact button |
+   social links, then a thin bottom row. The Contact page uses only the
+   bottom row (.site-footer--slim), since its details are already on the page. */
+.site-footer { color: var(--on-dark); background: var(--teal-900); }
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr 1fr;
+  gap: 32px;
+  align-items: start;
+  padding-block: clamp(44px, 6vw, 68px) 32px;
 }
-.footer-main__photo {
-  position: absolute; top: 0; bottom: 0; left: 0; z-index: -2;
-  width: 40%; height: 100%;
-  object-fit: cover; object-position: 60% 25%;
-}
-.footer-main::after {                 /* fades the photo into the teal */
-  content: ""; position: absolute; inset: 0; z-index: -1;
-  background: linear-gradient(90deg, rgba(21,48,47,0) 0%, rgba(21,48,47,.25) 22%, var(--teal-900) 40%);
-}
-.footer-main__inner {
-  max-width: none;
-  padding-block: clamp(44px, 6vw, 64px);
-  padding-left: max(42%, var(--gutter));
-}
-.footer-main__inner .line-title { margin-bottom: 26px; font-size: .95rem; }
-
-.footer-cols { display: flex; flex-wrap: wrap; align-items: center; row-gap: 24px; }
-.footer-col { padding-inline: 28px; }
-.footer-col:first-child { padding-left: 0; }
-.footer-col + .footer-col { border-left: 1px solid rgba(244,240,232,.22); }
-.footer-label { font-family: var(--font-body); font-size: .78rem; font-weight: 700; margin-bottom: 6px; }
-.footer-col p, .footer-col a:not(.btn) { display: block; font-size: .8rem; color: var(--on-dark-soft); line-height: 1.65; }
+.footer-col h3 { margin-bottom: 10px; }
+.footer-col p, .footer-col a:not(.btn) { font-size: .8rem; color: var(--on-dark-soft); line-height: 1.7; }
 .footer-col a:not(.btn):hover { color: var(--on-dark); }
-.footer-col .btn { margin-top: 6px; gap: 1.2em; }
-
-.footer-social { display: flex; align-items: center; gap: 22px; }
-.footer-social a { display: inline-flex; align-items: center; min-height: 44px; color: var(--on-dark) !important; }
-.footer-social svg { width: 22px; height: 22px; }
-.footer-social__text { font-family: var(--font-caps); font-weight: 700; font-size: .9rem !important; letter-spacing: .02em; }
-.footer-social__aa { font-family: var(--font-display); font-weight: 600; font-size: 1.25rem !important; letter-spacing: -.06em; }
-
-.footer-bar { background: var(--paper); color: var(--ink); border-top: 1px solid var(--line); }
-.footer-bar__inner {
-  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px;
-  min-height: 60px; padding-block: 14px;
+.footer-cta { text-align: center; }
+.footer-cta .section-title { margin-bottom: 12px; color: var(--on-dark); }
+.footer-cta p { max-width: 34ch; margin-inline: auto; }
+.footer-cta .btn { margin-top: 20px; }
+.footer-follow { justify-self: end; }
+.footer-follow .social a { color: var(--on-dark); }
+.footer-bottom {
+  display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  padding-block: 16px 22px;
+  border-top: 1px solid rgba(244,240,232,.15);
+  font-size: .7rem; color: var(--on-dark-soft);
 }
-.footer-bar__copy { font-size: .7rem; color: var(--ink-soft); }
-.footer-bar__name {
-  display: flex; align-items: center; gap: 18px;
-  font-family: var(--font-display); font-size: .85rem; letter-spacing: .32em; text-transform: uppercase;
-}
-.footer-bar__name::before, .footer-bar__name::after { content: ""; width: 70px; height: 1px; background: var(--line); }
-.footer-bar__places {
-  justify-self: end;
-  font-family: var(--font-caps); font-size: .58rem; font-weight: 500;
-  letter-spacing: var(--track-caps); text-transform: uppercase; color: var(--ink-soft);
-}
+.footer-bottom nav { display: flex; gap: 14px; }
+.footer-bottom a:hover { color: var(--on-dark); }
+.site-footer--slim .footer-bottom { border-top: 0; padding-block: 22px; }
 
 
 /* 5. HOMEPAGE */
@@ -463,11 +434,12 @@ a:hover .play { transform: scale(1.08); background: rgba(21,48,47,.5); }
    phones (the cut-off one tells people to swipe). Arrows move one photo at
    a time; the thin bar underneath shows where you are in the set. */
 .headshots { background: var(--paper-2); padding-block: clamp(44px, 6vw, 72px); }
-.headshots__head {
+/* Heading row shared by the Headshots and Behind the Scenes strips */
+.carousel-head {
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
   margin-bottom: clamp(18px, 2.5vw, 26px);
 }
-.headshots__controls { display: flex; gap: 8px; }
+.carousel-controls { display: flex; gap: 8px; flex: none; }
 
 .carousel__btn {
   display: grid; place-items: center; width: 44px; height: 44px;
@@ -512,7 +484,8 @@ a:hover .play { transform: scale(1.08); background: rgba(21,48,47,.5); }
   transition: transform .3s var(--ease), width .3s var(--ease);
 }
 
-/* Larger view (lightbox) */
+/* Full-size viewer (lightbox), shared by Headshots and Behind the Scenes.
+   The script puts a photo, a clip or a YouTube player into .lightbox__stage. */
 .lightbox {
   width: 100vw; height: 100dvh; max-width: none; max-height: none;
   margin: 0; padding: 0; border: 0;
@@ -521,7 +494,16 @@ a:hover .play { transform: scale(1.08); background: rgba(21,48,47,.5); }
 }
 .lightbox[open] { display: grid; place-items: center; }
 .lightbox::backdrop { background: rgba(12, 26, 25, .6); }
-.lightbox__img { max-width: min(88vw, 900px); max-height: 86dvh; object-fit: contain; }
+.lightbox__stage { display: grid; place-items: center; }
+.lightbox__stage img,
+.lightbox__stage video { display: block; max-width: min(88vw, 900px); max-height: 82dvh; object-fit: contain; background: #000; }
+.lightbox__stage iframe { display: block; border: 0; height: min(82dvh, 160vw); aspect-ratio: 9 / 16; max-width: 88vw; background: #000; }
+.lightbox__caption {
+  position: absolute; left: 0; right: 0; bottom: clamp(10px, 2.5vw, 24px);
+  text-align: center; font-family: var(--font-display); font-size: 1.05rem; letter-spacing: .04em;
+  color: var(--on-dark-soft);
+}
+.lightbox__caption:empty { display: none; }
 .lightbox__btn,
 .lightbox__close {
   position: absolute;
@@ -535,43 +517,193 @@ a:hover .play { transform: scale(1.08); background: rgba(21,48,47,.5); }
 .lightbox__btn--next { right: clamp(10px, 3vw, 32px); top: 50%; transform: translateY(-50%); }
 .lightbox__close { top: clamp(10px, 3vw, 28px); right: clamp(10px, 3vw, 32px); }
 
-/* --- Up Next (dark band, portrait on the right) --- */
+/* --- Behind the Scenes (stories strip) ---
+   Dark band so the photos pop and the long run of cream sections gets a
+   break. Cards are 9:16 like phone stories: about 4½ visible on desktop,
+   3½ on tablets, 2¼ on phones. Clips loop silently only while on screen. */
+.bts { background: var(--teal-900); color: var(--on-dark); padding-block: clamp(44px, 6vw, 72px); }
+.bts .carousel-head { align-items: flex-end; }
+.bts__intro { margin-top: 10px; font-size: .9rem; color: var(--on-dark-soft); }
+.bts .carousel__btn { border-color: rgba(244,240,232,.35); color: var(--on-dark); }
+.bts .carousel__btn:hover:not(:disabled) { background: var(--on-dark); border-color: var(--on-dark); color: var(--teal-900); }
+.bts .carousel__progress { background: rgba(244,240,232,.18); }
+.bts .carousel__progress span { background: var(--on-dark); }
+
+.story {
+  position: relative;
+  flex: 0 0 calc((100% - 4 * var(--gap)) / 4.5);
+  aspect-ratio: 9 / 16;
+  padding: 0; border: 0; border-radius: 4px;
+  overflow: hidden;
+  background: var(--teal-800);
+  color: var(--on-dark);
+  text-align: left;
+  cursor: zoom-in;
+  scroll-snap-align: start;
+}
+.story__media {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform .6s var(--ease);
+}
+.story:hover .story__media { transform: scale(1.04); }
+.story::after {                        /* shade under the caption */
+  content: ""; position: absolute; inset: 45% 0 0 0;
+  background: linear-gradient(0deg, rgba(12,26,25,.85) 0%, rgba(12,26,25,0) 100%);
+  pointer-events: none;
+}
+.story__text {
+  position: absolute; left: 14px; right: 14px; bottom: 14px; z-index: 1;
+  display: grid; gap: 4px;
+}
+.story__tag {
+  font-family: var(--font-caps); font-size: .56rem; font-weight: 600;
+  letter-spacing: var(--track-caps); text-transform: uppercase; color: var(--on-dark-soft);
+}
+.story__caption { font-family: var(--font-display); font-size: 1.1rem; line-height: 1.2; }
+.story__badge {                         /* marks cards that are clips */
+  position: absolute; top: 12px; right: 12px; z-index: 1;
+  display: grid; place-items: center; width: 28px; height: 28px;
+  border: 1px solid rgba(244,240,232,.7); border-radius: 50%;
+  background: rgba(12,26,25,.35); backdrop-filter: blur(2px);
+}
+.story__badge svg { width: 10px; height: 10px; margin-left: 2px; }
+
+
+/* --- Up Next (rotating slides) ---
+   Each slide is a wide photo (landscape left, Malia right) with the text on
+   a soft shade at the left. All slides sit in the same grid cell, so the
+   band is as tall as the tallest slide and nothing jumps when they change. */
 .up-next {
+  position: relative;
+  overflow: hidden;
+  background: var(--teal-900);          /* shows while the photos load */
+  color: var(--on-dark);
+}
+.up-next__slides { display: grid; perspective: 2000px; }
+.up-next__slide {
+  grid-area: 1 / 1;
   position: relative;
   isolation: isolate;
   overflow: hidden;
   background: var(--teal-900);
-  color: var(--on-dark);
+  backface-visibility: hidden;
 }
+.up-next__slide[hidden] { display: none; }
+/* Once the script is running, only the current slide (and the one leaving) shows */
+.up-next.is-ready .up-next__slide:not(.is-active):not(.is-leaving) { visibility: hidden; }
+.up-next.is-ready .up-next__slide.is-active { z-index: 2; }
+.up-next.is-ready .up-next__slide.is-leaving { z-index: 1; }
+
 .up-next__photo {
-  position: absolute; top: 0; right: 0; z-index: -2;
-  width: 46%; height: 100%;
-  object-fit: cover; object-position: 35% 25%;
+  position: absolute; inset: 0; z-index: -2;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: var(--focus, 72% 40%);
 }
-.up-next::before {                     /* blends the photo's left edge into the teal */
+.up-next__slide::before {
   content: ""; position: absolute; inset: 0; z-index: -1;
-  background: linear-gradient(90deg, var(--teal-900) 54%, rgba(21,48,47,.35) 70%, rgba(21,48,47,0) 85%);
+  background: linear-gradient(90deg, rgba(12,26,25,.42) 0%, rgba(12,26,25,.26) 40%, rgba(12,26,25,.06) 60%, rgba(12,26,25,0) 70%);
 }
 .up-next__inner {
   display: grid;
-  grid-template-columns: auto auto auto;
+  /* fixed middle column so the text sits in the same place on every slide;
+     long project names wrap instead of pushing "Coming soon" over the photo */
+  grid-template-columns: auto clamp(230px, 24vw, 330px) auto;
   justify-content: start;
   align-items: center;
-  gap: clamp(28px, 4.5vw, 64px);
-  min-height: clamp(220px, 24vw, 300px);
-  padding-block: 48px;
+  gap: clamp(28px, 4vw, 56px);
+  min-height: clamp(190px, 15vw, 250px);   /* about the mock-up's proportions, plus room for the controls */
+  padding-block: 28px 44px;
+  text-shadow: 0 1px 12px rgba(12,26,25,.45);
 }
-.up-next__item { padding-right: clamp(28px, 4.5vw, 64px); border-right: 1px solid rgba(244,240,232,.25); }
+.up-next .line-title { letter-spacing: .26em; }
+.up-next .line-title::after { width: 92px; opacity: .8; }
+.up-next__item {
+  padding-right: clamp(28px, 4vw, 56px);
+  border-right: 1px solid rgba(244,240,232,.45);
+}
 .up-next__name {
   font-family: var(--font-display); font-weight: 500;
-  font-size: clamp(1.2rem, 1.8vw, 1.45rem); letter-spacing: .18em; text-transform: uppercase;
-  margin-bottom: 8px;
+  font-size: clamp(1.15rem, 1.7vw, 1.4rem); letter-spacing: .2em; text-transform: uppercase;
+  margin-bottom: 10px;
 }
-.up-next__item p { font-family: var(--font-caps); font-size: .64rem; letter-spacing: var(--track-caps); text-transform: uppercase; color: var(--on-dark-soft); line-height: 2; }
-.up-next__soon { display: grid; gap: 10px; color: var(--on-dark); }
-.up-next__soon .eyebrow { font-size: .56rem; color: var(--on-dark-soft); }
-.up-next__soon svg { width: 130px; height: 16px; transition: transform .25s var(--ease); }
+.up-next__item p {
+  font-family: var(--font-caps); font-size: .7rem; font-weight: 500;
+  letter-spacing: var(--track-caps); text-transform: uppercase;
+  color: var(--on-dark); line-height: 2.1;
+}
+.up-next__soon { display: grid; gap: 12px; padding-block: 10px; color: var(--on-dark); }
+.up-next__soon .eyebrow { font-size: .6rem; color: var(--on-dark); }
+.up-next__soon svg { width: 170px; height: 16px; transition: transform .25s var(--ease); }
 .up-next__soon:hover svg { transform: translateX(6px); }
+
+/* Controls: pause button + one short line per slide. The current line
+   fills up over the interval, so people can see when the next flip comes. */
+.up-next__controls {
+  position: absolute; left: 0; right: 0; bottom: 12px; z-index: 3;
+  display: flex; align-items: center; gap: 10px;
+}
+.up-next__controls[hidden] { display: none; }
+.up-next__pause {
+  display: grid; place-items: center; width: 32px; height: 32px;
+  margin-left: -8px;
+  border: 0; background: none; color: var(--on-dark); cursor: pointer; opacity: .85;
+}
+.up-next__pause:hover { opacity: 1; }
+.up-next__pause svg { width: 13px; height: 13px; }
+.up-next__pause .icon-play,
+.up-next.is-paused .up-next__pause .icon-pause { display: none; }
+.up-next.is-paused .up-next__pause .icon-play { display: block; }
+.up-next__dots { display: flex; gap: 6px; }
+.up-next__dot {
+  position: relative; width: 34px; height: 32px;       /* tall hit area, thin visible line */
+  padding: 0; border: 0; background: none; cursor: pointer;
+}
+.up-next__dot::before,
+.up-next__dot::after {
+  content: ""; position: absolute; left: 0; top: 50%; height: 2px; margin-top: -1px;
+}
+.up-next__dot::before { right: 0; background: rgba(244,240,232,.35); }
+.up-next__dot::after { width: 0; background: var(--on-dark); }
+.up-next__dot[aria-current="true"]::after {
+  animation: dot-fill var(--interval, 6000ms) linear forwards;
+}
+.up-next.is-paused .up-next__dot[aria-current="true"]::after,
+.up-next.is-held .up-next__dot[aria-current="true"]::after,
+.up-next.is-offscreen .up-next__dot[aria-current="true"]::after { animation-play-state: paused; }
+@keyframes dot-fill { from { width: 0; } to { width: 100%; } }
+
+/* Transitions. "Flip" turns the band like a cube rotating left: the old
+   slide swings away to the left as the new one comes round from the right
+   (reversed when going back). --depth is half the band's width, set by the script. */
+.up-next[data-transition="flip"] .up-next__slide { transform-origin: 50% 50% calc(var(--depth, 600px) * -1); }
+.up-next__slide.anim-out-next  { animation: flip-out-next  var(--speed, 1s) cubic-bezier(.6,0,.25,1) both; }
+.up-next__slide.anim-in-next   { animation: flip-in-next   var(--speed, 1s) cubic-bezier(.6,0,.25,1) both; }
+.up-next__slide.anim-out-prev  { animation: flip-out-prev  var(--speed, 1s) cubic-bezier(.6,0,.25,1) both; }
+.up-next__slide.anim-in-prev   { animation: flip-in-prev   var(--speed, 1s) cubic-bezier(.6,0,.25,1) both; }
+@keyframes flip-out-next { from { transform: rotateY(0); }      to { transform: rotateY(-90deg); } }
+@keyframes flip-in-next  { from { transform: rotateY(90deg); }  to { transform: rotateY(0); } }
+@keyframes flip-out-prev { from { transform: rotateY(0); }      to { transform: rotateY(90deg); } }
+@keyframes flip-in-prev  { from { transform: rotateY(-90deg); } to { transform: rotateY(0); } }
+
+.up-next[data-transition="slide"] .up-next__slide.anim-out-next { animation-name: slide-out-next; }
+.up-next[data-transition="slide"] .up-next__slide.anim-in-next  { animation-name: slide-in-next; }
+.up-next[data-transition="slide"] .up-next__slide.anim-out-prev { animation-name: slide-out-prev; }
+.up-next[data-transition="slide"] .up-next__slide.anim-in-prev  { animation-name: slide-in-prev; }
+@keyframes slide-out-next { to { transform: translateX(-100%); } }
+@keyframes slide-in-next  { from { transform: translateX(100%); } }
+@keyframes slide-out-prev { to { transform: translateX(100%); } }
+@keyframes slide-in-prev  { from { transform: translateX(-100%); } }
+
+/* Reduced motion: a quick fade instead of movement */
+@media (prefers-reduced-motion: reduce) {
+  .up-next__slide.anim-out-next, .up-next__slide.anim-out-prev { animation: fade-out .4s ease both !important; }
+  .up-next__slide.anim-in-next,  .up-next__slide.anim-in-prev  { animation: fade-in .4s ease both !important; }
+}
+@keyframes fade-out { to { opacity: 0; } }
+@keyframes fade-in  { from { opacity: 0; } }
 
 
 /* 6. RESPONSIVE */
@@ -579,12 +711,7 @@ a:hover .play { transform: scale(1.08); background: rgba(21,48,47,.5); }
 /* Tablet: tighten desktop nav, 3-up card rows */
 @media (max-width: 1024px) {
   .headshot { flex-basis: calc((100% - 2 * var(--gap)) / 3); }
-  .footer-main__inner { padding-left: max(38%, var(--gutter)); }
-  .footer-col + .footer-col { border-left: 0; }
-  .footer-col { padding-left: 0; padding-right: 36px; }
-  .up-next__photo { width: 50%; }
-  .footer-bar__name::before, .footer-bar__name::after { width: 36px; }
-  .footer-bar__places { white-space: nowrap; letter-spacing: .12em; }
+  .story { flex-basis: calc((100% - 3 * var(--gap)) / 3.5); }
 }
 
 /* Phone (matches the mobile mockup) */
@@ -632,25 +759,35 @@ a:hover .play { transform: scale(1.08); background: rgba(21,48,47,.5); }
   /* Headshots: photos run edge to edge and swipe; about 1½ visible */
   .carousel__track { --gap: 8px; margin-inline: calc(var(--gutter) * -1); padding-inline: var(--gutter); scroll-padding-inline: var(--gutter); }
   .headshot { flex-basis: 68%; }
+  .story { flex-basis: 44%; }
+  .story__caption { font-size: 1rem; }
+  .bts .carousel-controls { display: none; }    /* swipe instead; the bar still shows position */
+  .bts .line-title { letter-spacing: .16em; white-space: nowrap; }
   .carousel__btn { width: 40px; height: 40px; }
   .lightbox__btn { top: auto; bottom: 20px; transform: none; }
 
-  /* Up Next: portrait becomes the background, text sits over the lower part */
-  .up-next__photo { width: 100%; object-position: 50% 15%; }
-  .up-next::before { background: linear-gradient(180deg, rgba(21,48,47,0) 0%, rgba(21,48,47,.6) 38%, var(--teal-900) 62%); }
-  .up-next__inner { grid-template-columns: 1fr; gap: 22px; padding-top: 230px; padding-bottom: 40px; }
-  .up-next__item { padding: 0 0 20px; border-right: 0; border-bottom: 1px solid rgba(244,240,232,.25); }
+  /* Up Next: the wide photo can't fit a phone, so each slide shows it on
+     top cropped around Malia (--focus-mobile), fading into teal, with the
+     text below and the controls along the bottom */
+  .up-next__photo {
+    position: relative; inset: auto; z-index: -2;
+    display: block; height: auto; aspect-ratio: 4 / 3;
+    object-position: var(--focus-mobile, 80% 30%);
+  }
+  .up-next__slide::before { background: linear-gradient(180deg, rgba(21,48,47,0) 0, rgba(21,48,47,0) 45vw, var(--teal-900) 75vw); }
+  .up-next__inner { grid-template-columns: 1fr; gap: 20px; min-height: 0; margin-top: -36px; padding-top: 0; padding-bottom: 72px; text-shadow: none; }
+  .up-next__item { padding: 0 0 20px; border-right: 0; border-bottom: 1px solid rgba(244,240,232,.35); }
+  .up-next__soon svg { width: 130px; }
+  .up-next__controls { bottom: 18px; }
+  .up-next__pause, .up-next__dot { height: 44px; }      /* comfortable tap targets */
+  .up-next__pause { width: 44px; }
 
-  /* Footer: portrait on top, details stacked below */
-  .footer-main__photo { position: relative; display: block; width: 100%; height: 240px; }
-  .footer-main::after { background: linear-gradient(180deg, rgba(21,48,47,0) 0px, rgba(21,48,47,.3) 140px, var(--teal-900) 240px); }
-  .footer-main__inner { padding: 0 var(--gutter) 40px; margin-top: -44px; }
-  .footer-cols { flex-direction: column; align-items: flex-start; }
-  .footer-col { padding: 0; }
-  .footer-col + .footer-col { border-left: 0; border-top: 1px solid rgba(244,240,232,.22); padding-top: 22px; width: 100%; }
-  .footer-bar__inner { grid-template-columns: 1fr; justify-items: center; text-align: center; gap: 8px; padding-block: 20px; }
-  .footer-bar__name { order: -1; }
-  .footer-bar__places { justify-self: center; }
+  /* Footer: single centered column, Let's Work Together first */
+  .footer-grid { grid-template-columns: 1fr; gap: 28px; text-align: center; }
+  .footer-cta { order: -1; }
+  .footer-follow { justify-self: center; }
+  .social { justify-content: center; }
+  .footer-bottom { justify-content: center; text-align: center; }
 }
 
 
@@ -698,7 +835,6 @@ a:hover .play { transform: scale(1.08); background: rgba(21,48,47,.5); }
 .field label .opt { font-weight: 500; color: var(--ink-soft); letter-spacing: .08em; text-transform: none; }
 
 .field input,
-.field select,
 .field textarea {
   width: 100%;
   padding: 13px 14px;
@@ -713,7 +849,6 @@ a:hover .play { transform: scale(1.08); background: rgba(21,48,47,.5); }
 .field input::placeholder,
 .field textarea::placeholder { color: #9a9a92; }
 .field input:focus,
-.field select:focus,
 .field textarea:focus {
   outline: none;
   border-color: var(--teal-600);
