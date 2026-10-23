@@ -403,3 +403,51 @@ document.querySelectorAll('.up-next').forEach((root) => {
     if (e.key === 'ArrowLeft') go(current - 1, 'prev');
   });
 });
+
+// 8. Film / TV project panel
+//    Each credit card has its project's details in a <template> right below
+//    it. Opening a card copies that into the panel; the arrows step through
+//    projects in order. The clip only loads when its play button is pressed.
+document.querySelectorAll('.film-tv').forEach((section) => {
+  const credits = [...section.querySelectorAll('.credit')];
+  const dialog = section.querySelector('.project-panel');
+  if (!credits.length || !dialog || typeof dialog.showModal !== 'function') return;
+  const body = dialog.querySelector('.project-panel__body');
+  const count = dialog.querySelector('.project-panel__count');
+  let current = 0;
+
+  const open = (n) => {
+    current = (n + credits.length) % credits.length;
+    const tpl = credits[current].querySelector('template');
+    body.replaceChildren(tpl.content.cloneNode(true));          // also stops any clip that was playing
+    count.textContent = `${current + 1} / ${credits.length}`;
+    const title = body.querySelector('[data-panel-title]');
+    if (title) { title.id = 'panel-title'; dialog.setAttribute('aria-labelledby', 'panel-title'); }
+    dialog.scrollTop = 0;
+
+    const frame = body.querySelector('.player__frame[data-video]');
+    const play = frame && frame.querySelector('.player__play');
+    if (play) play.addEventListener('click', () => {
+      const video = makeVideoFrame(frame.dataset.video, title ? title.textContent : 'Clip');
+      if (video) frame.replaceChildren(video);
+    });
+  };
+
+  credits.forEach((credit, n) => credit.querySelector('.credit__open').addEventListener('click', () => {
+    open(n);
+    dialog.showModal();
+  }));
+  dialog.querySelectorAll('.project-panel__step').forEach((btn) =>
+    btn.addEventListener('click', () => open(current + Number(btn.dataset.step))));
+  dialog.querySelector('.project-panel__close').addEventListener('click', () => dialog.close());
+  dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });   // click outside the panel
+  dialog.addEventListener('keydown', (e) => {
+    if (e.target.closest('input, textarea')) return;
+    if (e.key === 'ArrowLeft') open(current - 1);
+    if (e.key === 'ArrowRight') open(current + 1);
+  });
+  dialog.addEventListener('close', () => {
+    body.replaceChildren();
+    credits[current].querySelector('.credit__open').focus({ preventScroll: true });
+  });
+});
