@@ -343,8 +343,9 @@
 
 
 <!-- ===================== FILM / TV (project view) =====================
-     One card per credit, newest first. Tapping a card opens a panel with
-     everything about that project. Each card's panel content lives in the
+     One card per credit, newest first. Give each card a short unique
+     data-project id (lowercase, dashes): it links the project to its photos.
+     Tapping a card opens a panel with everything about that project. Each card's panel content lives in the
      <template> right below it, so a whole project is edited in one place.
 
      CARD: still (16:9), type (e.g. "TV Series · CBS"), title, role and year.
@@ -356,7 +357,8 @@
        - facts: Role / Credit / Year (add or remove rows freely)
        - summary: one or two sentences
        - watch buttons: one per platform, linking to the title's page there
-       - behind the scenes: 1 to 3 photos
+       - behind the scenes: filled in automatically from the Behind the
+         Scenes strip (any card there with the same data-project id)
        - press: outlet + headline, linking to the article
      Credits, roles and years below are placeholders; confirm each one. -->
 <section class="section film-tv" id="film-tv" aria-labelledby="film-tv-title">
@@ -365,7 +367,7 @@
     <p class="section-intro">Select a project for clips, photos, press and where to watch.</p>
 
     <div class="credit-grid">
-    <article class="credit">
+    <article class="credit" data-project="ncis">
       <button class="credit__open" type="button" aria-haspopup="dialog">
         <span class="credit__media">
           <img src="images/projects/ncis.jpg" alt="" loading="lazy">
@@ -404,18 +406,14 @@
             </ul>
           </div>
           </div>
-          <div class="pd__block pd__block--bts">
+          <div class="pd__block pd__block--bts" data-bts-slot hidden>
             <h4 class="pd__label">Behind the scenes</h4>
-            <div class="pd__bts">
-              <img src="images/bts/bts-6.jpg" alt="Malia on set in costume" loading="lazy">
-              <img src="images/bts/bts-4.jpg" alt="Malia with castmates" loading="lazy">
-              <img src="images/bts/bts-2.jpg" alt="Malia between setups" loading="lazy">
-            </div>
+            <div class="pd__bts"></div>
           </div>
         </div>
       </template>
     </article>
-    <article class="credit">
+    <article class="credit" data-project="do-i-shock-u">
       <button class="credit__open" type="button" aria-haspopup="dialog">
         <span class="credit__media">
           <img src="images/projects/lightning.jpg" alt="" loading="lazy">
@@ -454,16 +452,14 @@
             </ul>
           </div>
           </div>
-          <div class="pd__block pd__block--bts">
+          <div class="pd__block pd__block--bts" data-bts-slot hidden>
             <h4 class="pd__label">Behind the scenes</h4>
-            <div class="pd__bts">
-              <img src="images/bts/bts-4.jpg" alt="Malia with castmates on set" loading="lazy">
-            </div>
+            <div class="pd__bts"></div>
           </div>
         </div>
       </template>
     </article>
-    <article class="credit">
+    <article class="credit" data-project="win-the-city">
       <button class="credit__open" type="button" aria-haspopup="dialog">
         <span class="credit__media">
           <img src="images/projects/win-the-city.jpg" alt="" loading="lazy">
@@ -491,10 +487,14 @@
           
           
           </div>
+          <div class="pd__block pd__block--bts" data-bts-slot hidden>
+            <h4 class="pd__label">Behind the scenes</h4>
+            <div class="pd__bts"></div>
+          </div>
         </div>
       </template>
     </article>
-    <article class="credit">
+    <article class="credit" data-project="project-title">
       <button class="credit__open" type="button" aria-haspopup="dialog">
         <span class="credit__media">
           <img src="images/projects/project-title.jpg" alt="" loading="lazy">
@@ -521,6 +521,10 @@
             <p class="pd__summary">A credit with only the basics: a still and the credit details. The panel simply leaves out the sections it doesn’t have.</p>
           
           
+          </div>
+          <div class="pd__block pd__block--bts" data-bts-slot hidden>
+            <h4 class="pd__label">Behind the scenes</h4>
+            <div class="pd__bts"></div>
           </div>
         </div>
       </template>
@@ -564,6 +568,9 @@
        shows the play badge. It opens in the full-size viewer.
      CAPTIONS: story__tag is the small line (project or place); story__caption
        is the main line. Keep both short.
+     LINK TO A PROJECT: add data-project="…" with the same id as a Film / TV
+       card (e.g. data-project="ncis") and the photo or clip also appears in
+       that project's panel. Add it here once; it shows up in both places.
      Check with each production before posting on-set photos: many are
        under embargo until the project is released. -->
 <section class="bts" id="behind-the-scenes" aria-labelledby="bts-title">
@@ -585,16 +592,16 @@
 
     <div class="carousel">
       <div class="carousel__track" tabindex="0" aria-label="Behind the scenes photos and clips, scroll sideways for more">
-        <button class="story story--clip" type="button" data-video="video/bts-clip-1.mp4" data-alt="Malia between takes on a beach set" aria-label="Play clip: Golden hour on set">
+        <button class="story story--clip" type="button" data-video="video/bts-clip-1.mp4" data-project="ncis" data-alt="Malia between takes on a beach set" aria-label="Play clip: Golden hour on set">
           <video class="story__media" src="video/bts-clip-1.mp4" poster="images/bts/clip-1.jpg" muted loop playsinline preload="none" aria-hidden="true"></video>
           <span class="story__badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg></span>
-          <span class="story__text"><span class="story__tag">Commercial shoot</span><span class="story__caption">Golden hour on set</span></span>
+          <span class="story__text"><span class="story__tag">NCIS: Hawaiʻi</span><span class="story__caption">Golden hour on set</span></span>
         </button>
         <button class="story" type="button" data-full="images/bts/bts-1.jpg" aria-label="View photo: Hosting live">
           <img class="story__media" src="images/bts/bts-1.jpg" alt="Malia on stage with a microphone" loading="lazy">
           <span class="story__text"><span class="story__tag">Honolulu Awakened</span><span class="story__caption">Hosting live</span></span>
         </button>
-        <button class="story" type="button" data-full="images/bts/bts-6.jpg" aria-label="View photo: Blocking a scene">
+        <button class="story" type="button" data-full="images/bts/bts-6.jpg" data-project="ncis" aria-label="View photo: Blocking a scene">
           <img class="story__media" src="images/bts/bts-6.jpg" alt="Malia on set in costume" loading="lazy">
           <span class="story__text"><span class="story__tag">NCIS: Hawaiʻi</span><span class="story__caption">Blocking a scene</span></span>
         </button>
@@ -603,7 +610,7 @@
           <span class="story__badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg></span>
           <span class="story__text"><span class="story__tag">5am call time</span><span class="story__caption">Hair & makeup</span></span>
         </button>
-        <button class="story" type="button" data-full="images/bts/bts-2.jpg" aria-label="View photo: Mic check">
+        <button class="story" type="button" data-full="images/bts/bts-2.jpg" data-project="win-the-city" aria-label="View photo: Mic check">
           <img class="story__media" src="images/bts/bts-2.jpg" alt="Malia testing a microphone before a show" loading="lazy">
           <span class="story__text"><span class="story__tag">Win the City</span><span class="story__caption">Mic check</span></span>
         </button>
@@ -620,7 +627,7 @@
           <img class="story__media" src="images/bts/bts-3.jpg" alt="Malia at a press event" loading="lazy">
           <span class="story__text"><span class="story__tag">Hawaiʻi Magazine</span><span class="story__caption">Press day</span></span>
         </button>
-        <button class="story" type="button" data-full="images/bts/bts-4.jpg" aria-label="View photo: With the cast">
+        <button class="story" type="button" data-full="images/bts/bts-4.jpg" data-project="do-i-shock-u" aria-label="View photo: With the cast">
           <img class="story__media" src="images/bts/bts-4.jpg" alt="Malia with castmates on set" loading="lazy">
           <span class="story__text"><span class="story__tag">Do I Shock U Like Lightning</span><span class="story__caption">With the cast</span></span>
         </button>

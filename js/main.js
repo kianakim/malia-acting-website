@@ -192,6 +192,7 @@ document.querySelectorAll('.headshots, .bts').forEach((section) => {
   const stage = dialog.querySelector('.lightbox__stage');
   const caption = dialog.querySelector('.lightbox__caption');
   let current = 0;
+  let returnTo = null;        // where focus goes back to when the viewer closes
 
   const show = (n) => {
     current = (n + items.length) % items.length;
@@ -216,12 +217,19 @@ document.querySelectorAll('.headshots, .bts').forEach((section) => {
     if (caption) caption.textContent = label ? label.textContent : '';
   };
 
-  items.forEach((item, n) => item.addEventListener('click', () => {
+  const openViewer = (n, from) => {
+    returnTo = from || null;
     viewerOpen = true;
     pauseLoops();
     show(n);
     dialog.showModal();
-  }));
+  };
+  items.forEach((item, n) => item.addEventListener('click', () => openViewer(n)));
+  // Lets a Film / TV project panel open one of these photos full-size
+  section.openViewerFor = (item, from) => {
+    const n = items.indexOf(item);
+    if (n > -1) openViewer(n, from);
+  };
   dialog.querySelector('.lightbox__btn--prev').addEventListener('click', () => show(current - 1));
   dialog.querySelector('.lightbox__btn--next').addEventListener('click', () => show(current + 1));
   dialog.querySelector('.lightbox__close').addEventListener('click', () => dialog.close());
@@ -234,6 +242,11 @@ document.querySelectorAll('.headshots, .bts').forEach((section) => {
     stage.replaceChildren();                   // stops video and YouTube playback
     viewerOpen = false;
     resumeLoops();
+    if (returnTo) {                            // opened from a project panel: go back there
+      returnTo.focus({ preventScroll: true });
+      returnTo = null;
+      return;
+    }
     // bring the card they were looking at into view in the strip
     items[current].scrollIntoView({ behavior, block: 'nearest', inline: 'start' });
     items[current].focus({ preventScroll: true });
@@ -424,6 +437,32 @@ document.querySelectorAll('.film-tv').forEach((section) => {
     const title = body.querySelector('[data-panel-title]');
     if (title) { title.id = 'panel-title'; dialog.setAttribute('aria-labelledby', 'panel-title'); }
     dialog.scrollTop = 0;
+
+    // Behind-the-scenes photos: every Behind the Scenes card tagged with this
+    // project's id. They're entered once (in the strip) and shown here too.
+    const slot = body.querySelector('[data-bts-slot]');
+    const id = credits[current].dataset.project;
+    const stripSection = document.querySelector('.bts');
+    const tagged = id && stripSection ? [...stripSection.querySelectorAll(`.story[data-project="${id}"]`)] : [];
+    if (slot && tagged.length) {
+      const grid = slot.querySelector('.pd__bts');
+      tagged.forEach((story) => {
+        const media = story.querySelector('img, video');
+        const label = story.querySelector('.story__caption');
+        const thumb = document.createElement('button');
+        thumb.type = 'button';
+        thumb.className = 'pd__thumb' + (story.dataset.video ? ' pd__thumb--clip' : '');
+        thumb.setAttribute('aria-label', (story.dataset.video ? 'Play clip: ' : 'View photo: ') + (label ? label.textContent : 'behind the scenes'));
+        const img = document.createElement('img');
+        img.src = media.tagName === 'VIDEO' ? media.getAttribute('poster') : media.getAttribute('src');
+        img.alt = '';
+        img.loading = 'lazy';
+        thumb.appendChild(img);
+        thumb.addEventListener('click', () => stripSection.openViewerFor && stripSection.openViewerFor(story, thumb));
+        grid.appendChild(thumb);
+      });
+      slot.hidden = false;
+    }
 
     const frame = body.querySelector('.player__frame[data-video]');
     const play = frame && frame.querySelector('.player__play');
