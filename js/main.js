@@ -129,17 +129,56 @@ function makeVideoFrame(link, title) {
   return frame;
 }
 
-// 4. Photo strips: Headshots and Behind the Scenes
+// 3b. Hero: "Watch Reel" opens the reel player above the name
+//     The YouTube player loads only when the button is pressed. Pressing it
+//     again (now "Close Reel") or the × closes it and stops the video.
+const heroReel = document.querySelector('.hero__reel');
+const heroReelBtn = document.querySelector('.hero__reel-btn');
+
+if (heroReel && heroReelBtn) {
+  const hero = heroReel.closest('.hero');
+  const frameBox = heroReel.querySelector('.hero__reel-frame');
+  const label = heroReelBtn.querySelector('.hero__reel-label');
+
+  const openReel = () => {
+    const frame = makeVideoFrame(heroReelBtn.href, 'Malia Aiello reel');
+    if (!frame) return false;                  // not a video link: let it open normally
+    frameBox.replaceChildren(frame);
+    heroReel.hidden = false;
+    hero.classList.add('is-playing');
+    heroReelBtn.setAttribute('aria-expanded', 'true');
+    if (label) label.textContent = 'Close Reel';
+    heroReel.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'nearest' });
+    return true;
+  };
+  const closeReel = () => {
+    frameBox.replaceChildren();                // removing the player stops the video
+    heroReel.hidden = true;
+    hero.classList.remove('is-playing');
+    heroReelBtn.setAttribute('aria-expanded', 'false');
+    if (label) label.textContent = 'Watch Reel';
+  };
+
+  heroReelBtn.addEventListener('click', (e) => {
+    if (!heroReel.hidden) { e.preventDefault(); closeReel(); return; }
+    if (openReel()) e.preventDefault();
+  });
+  heroReel.querySelector('.hero__reel-close').addEventListener('click', () => { closeReel(); heroReelBtn.focus(); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !heroReel.hidden && !document.querySelector('dialog[open]')) closeReel();
+  });
+}
+
+// 4. Sideways strips: Headshots and Featured Work
 //    Each strip scrolls by swipe or trackpad on its own; the arrows move one
 //    card at a time, dim at either end, and a thin bar shows the position.
-//    Tapping a card opens the full-size viewer: a photo, a short clip (with
-//    controls), or an unlisted YouTube video if the card has data-youtube.
-document.querySelectorAll('.headshots, .bts').forEach((section) => {
+//    Headshots also open full-size; Featured Work cards open the video player.
+document.querySelectorAll('.headshots, .work-section').forEach((section) => {
   const track = section.querySelector('.carousel__track');
   const prev = section.querySelector('.carousel__btn--prev');
   const next = section.querySelector('.carousel__btn--next');
   if (!track) return;
-  const items = [...track.querySelectorAll('.headshot, .story')];
+  const items = [...track.querySelectorAll('.headshot')];
 
   const bar = document.createElement('div');
   bar.className = 'carousel__progress';
@@ -170,66 +209,22 @@ document.querySelectorAll('.headshots, .bts').forEach((section) => {
   addEventListener('resize', update);
   update();
 
-  // Short clips loop silently, but only while they're actually on screen
-  // (saves data and battery). Visitors who turn off animations see the still.
-  const loops = [...track.querySelectorAll('video.story__media')];
-  let viewerOpen = false;
-  if (loops.length && !reduceMotion && 'IntersectionObserver' in window) {
-    const watcher = new IntersectionObserver((entries) => entries.forEach((e) => {
-      const v = e.target;
-      v.dataset.inView = e.isIntersecting ? '1' : '';
-      if (e.isIntersecting && !viewerOpen) v.play().catch(() => {});   // some browsers refuse; the still stays
-      else v.pause();
-    }), { threshold: 0.6 });
-    loops.forEach((v) => { v.preload = 'metadata'; watcher.observe(v); });
-  }
-  const pauseLoops = () => loops.forEach((v) => v.pause());
-  const resumeLoops = () => { if (!reduceMotion) loops.forEach((v) => { if (v.dataset.inView) v.play().catch(() => {}); }); };
-
-  // Full-size viewer
+  // Full-size view (Headshots only)
+  if (!section.classList.contains('headshots')) return;
   const dialog = section.querySelector('.lightbox');
   if (!dialog || typeof dialog.showModal !== 'function') return;
   const stage = dialog.querySelector('.lightbox__stage');
-  const caption = dialog.querySelector('.lightbox__caption');
   let current = 0;
-  let returnTo = null;        // where focus goes back to when the viewer closes
 
   const show = (n) => {
     current = (n + items.length) % items.length;
-    const item = items[current];
-    const thumb = item.querySelector('img, video');
-    const label = item.querySelector('.story__caption');
-    let media;
-    const yt = item.dataset.youtube && makeVideoFrame(item.dataset.youtube, label ? label.textContent : 'Video');
-    if (yt) {
-      media = yt;
-    } else if (item.dataset.video) {
-      media = document.createElement('video');
-      Object.assign(media, { src: item.dataset.video, controls: true, autoplay: true, loop: true, playsInline: true });
-      media.poster = thumb.getAttribute('poster') || '';
-      media.setAttribute('aria-label', item.dataset.alt || (label ? label.textContent : 'Clip'));
-    } else {
-      media = document.createElement('img');
-      media.src = item.dataset.full || thumb.src;
-      media.alt = thumb.alt;
-    }
-    stage.replaceChildren(media);              // swapping out the old one also stops any playing video
-    if (caption) caption.textContent = label ? label.textContent : '';
+    const thumb = items[current].querySelector('img');
+    const img = document.createElement('img');
+    img.src = items[current].dataset.full || thumb.src;
+    img.alt = thumb.alt;
+    stage.replaceChildren(img);
   };
-
-  const openViewer = (n, from) => {
-    returnTo = from || null;
-    viewerOpen = true;
-    pauseLoops();
-    show(n);
-    dialog.showModal();
-  };
-  items.forEach((item, n) => item.addEventListener('click', () => openViewer(n)));
-  // Lets a Film / TV project panel open one of these photos full-size
-  section.openViewerFor = (item, from) => {
-    const n = items.indexOf(item);
-    if (n > -1) openViewer(n, from);
-  };
+  items.forEach((item, n) => item.addEventListener('click', () => { show(n); dialog.showModal(); }));
   dialog.querySelector('.lightbox__btn--prev').addEventListener('click', () => show(current - 1));
   dialog.querySelector('.lightbox__btn--next').addEventListener('click', () => show(current + 1));
   dialog.querySelector('.lightbox__close').addEventListener('click', () => dialog.close());
@@ -239,141 +234,135 @@ document.querySelectorAll('.headshots, .bts').forEach((section) => {
     if (e.key === 'ArrowRight') show(current + 1);
   });
   dialog.addEventListener('close', () => {
-    stage.replaceChildren();                   // stops video and YouTube playback
-    viewerOpen = false;
-    resumeLoops();
-    if (returnTo) {                            // opened from a project panel: go back there
-      returnTo.focus({ preventScroll: true });
-      returnTo = null;
-      return;
-    }
-    // bring the card they were looking at into view in the strip
+    stage.replaceChildren();
+    // bring the photo they were looking at into view in the strip
     items[current].scrollIntoView({ behavior, block: 'nearest', inline: 'start' });
     items[current].focus({ preventScroll: true });
   });
 });
 
-// 5. Featured Work filter tabs
-//    Show/hide cards by their data-category. (The address bar is left alone:
-//    on this one-page site the # in the address is for jumping to sections.)
-const filters = document.querySelectorAll('.filter');
-const cards = document.querySelectorAll('.video-card');
+// 5. Pop-up viewer for Featured Work
+//    One dialog shows a YouTube video (or a short MP4 clip or a photo), with a
+//    caption. Closing it stops playback and returns focus to what opened it.
+const viewer = document.querySelector('.video-viewer');
+let openInViewer = () => false;
 
-if (filters.length && cards.length) {
-  const empty = document.querySelector('.video-empty');
-  filters.forEach((btn) => btn.addEventListener('click', () => {
-    const name = btn.dataset.filter;
-    let shown = 0;
-    filters.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
-    cards.forEach((card) => {
-      const match = name === 'all' || card.dataset.category === name;
-      card.hidden = !match;
-      card.classList.toggle('is-entering', match);
-      if (match) shown++;
-    });
-    if (empty) empty.hidden = shown > 0;
-  }));
-}
+if (viewer && typeof viewer.showModal === 'function') {
+  const stage = viewer.querySelector('.lightbox__stage');
+  const caption = viewer.querySelector('.lightbox__caption');
+  let returnTo = null;
 
-// 6. Featured Reel player
-//    The poster's play button loads the reel. Clicking a Featured Work card
-//    plays that video in the same player and scrolls back up to it.
-const player = document.querySelector('.player__frame');
-
-if (player) {
-  const title = document.querySelector('.player__title');
-  const meta = document.querySelector('.player__meta');
-  const play = (link) => {
-    const frame = makeVideoFrame(link, title && title.textContent);
-    if (frame) player.replaceChildren(frame);
-    return Boolean(frame);
-  };
-
-  const playButton = player.querySelector('.player__play');
-  if (playButton) playButton.addEventListener('click', () => play(player.dataset.video));
-
-  cards.forEach((card) => card.addEventListener('click', (e) => {
-    if (!toEmbedUrl(card.href)) return;       // not a video link: open it normally
-    e.preventDefault();                       // stay on the page; play here instead
-    cards.forEach((c) => c.classList.remove('is-playing'));
-    card.classList.add('is-playing');
-    if (title) title.textContent = card.dataset.title;
-    if (meta) meta.textContent = card.dataset.meta;
-    play(card.href);
-    document.querySelector('.player').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
-  }));
-}
-
-// 7. Film / TV project panel
-//    Each credit card has its project's details in a <template> right below
-//    it. Opening a card copies that into the panel; the arrows step through
-//    projects in order. The clip only loads when its play button is pressed.
-document.querySelectorAll('.film-tv').forEach((section) => {
-  const credits = [...section.querySelectorAll('.credit')];
-  const dialog = section.querySelector('.project-panel');
-  if (!credits.length || !dialog || typeof dialog.showModal !== 'function') return;
-  const body = dialog.querySelector('.project-panel__body');
-  const count = dialog.querySelector('.project-panel__count');
-  let current = 0;
-
-  const open = (n) => {
-    current = (n + credits.length) % credits.length;
-    const tpl = credits[current].querySelector('template');
-    body.replaceChildren(tpl.content.cloneNode(true));          // also stops any clip that was playing
-    count.textContent = `${current + 1} / ${credits.length}`;
-    const title = body.querySelector('[data-panel-title]');
-    if (title) { title.id = 'panel-title'; dialog.setAttribute('aria-labelledby', 'panel-title'); }
-    dialog.scrollTop = 0;
-
-    // Behind-the-scenes photos: every Behind the Scenes card tagged with this
-    // project's id. They're entered once (in the strip) and shown here too.
-    const slot = body.querySelector('[data-bts-slot]');
-    const id = credits[current].dataset.project;
-    const stripSection = document.querySelector('.bts');
-    const tagged = id && stripSection ? [...stripSection.querySelectorAll(`.story[data-project="${id}"]`)] : [];
-    if (slot && tagged.length) {
-      const grid = slot.querySelector('.pd__bts');
-      tagged.forEach((story) => {
-        const media = story.querySelector('img, video');
-        const label = story.querySelector('.story__caption');
-        const thumb = document.createElement('button');
-        thumb.type = 'button';
-        thumb.className = 'pd__thumb' + (story.dataset.video ? ' pd__thumb--clip' : '');
-        thumb.setAttribute('aria-label', (story.dataset.video ? 'Play clip: ' : 'View photo: ') + (label ? label.textContent : 'behind the scenes'));
-        const img = document.createElement('img');
-        img.src = media.tagName === 'VIDEO' ? media.getAttribute('poster') : media.getAttribute('src');
-        img.alt = '';
-        img.loading = 'lazy';
-        thumb.appendChild(img);
-        thumb.addEventListener('click', () => stripSection.openViewerFor && stripSection.openViewerFor(story, thumb));
-        grid.appendChild(thumb);
-      });
-      slot.hidden = false;
+  openInViewer = ({ youtube, video, photo, alt, text }, from) => {
+    let media = null;
+    if (youtube) {
+      media = makeVideoFrame(youtube, text || 'Video');
+      if (!media) return false;
+      viewer.classList.add('is-wide');                  // 16:9 player
+    } else if (video) {
+      media = document.createElement('video');
+      Object.assign(media, { src: video, controls: true, autoplay: true, loop: true, playsInline: true });
+      viewer.classList.remove('is-wide');
+    } else if (photo) {
+      media = document.createElement('img');
+      media.src = photo;
+      media.alt = alt || '';
+      viewer.classList.remove('is-wide');
     }
-
-    const frame = body.querySelector('.player__frame[data-video]');
-    const play = frame && frame.querySelector('.player__play');
-    if (play) play.addEventListener('click', () => {
-      const video = makeVideoFrame(frame.dataset.video, title ? title.textContent : 'Clip');
-      if (video) frame.replaceChildren(video);
-    });
+    if (!media) return false;
+    stage.replaceChildren(media);
+    caption.textContent = text || '';
+    returnTo = from || null;
+    if (!viewer.open) viewer.showModal();
+    return true;
   };
 
-  credits.forEach((credit, n) => credit.querySelector('.credit__open').addEventListener('click', () => {
-    open(n);
-    dialog.showModal();
-  }));
-  dialog.querySelectorAll('.project-panel__step').forEach((btn) =>
-    btn.addEventListener('click', () => open(current + Number(btn.dataset.step))));
-  dialog.querySelector('.project-panel__close').addEventListener('click', () => dialog.close());
-  dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });   // click outside the panel
-  dialog.addEventListener('keydown', (e) => {
-    if (e.target.closest('input, textarea')) return;
-    if (e.key === 'ArrowLeft') open(current - 1);
-    if (e.key === 'ArrowRight') open(current + 1);
+  viewer.querySelector('.lightbox__close').addEventListener('click', () => viewer.close());
+  viewer.addEventListener('click', (e) => { if (e.target === viewer) viewer.close(); });   // click the dark area
+  viewer.addEventListener('close', () => {
+    stage.replaceChildren();                   // stops the video
+    if (returnTo) returnTo.focus({ preventScroll: true });
+    returnTo = null;
   });
-  dialog.addEventListener('close', () => {
-    body.replaceChildren();
-    credits[current].querySelector('.credit__open').focus({ preventScroll: true });
+}
+
+// 6. Featured Work cards open in the pop-up player
+const cards = document.querySelectorAll('.video-card');
+cards.forEach((card) => card.addEventListener('click', (e) => {
+  const text = [card.dataset.title, card.dataset.meta].filter(Boolean).join('  ·  ');
+  if (openInViewer({ youtube: card.href, text }, card)) e.preventDefault();   // otherwise it opens YouTube
+}));
+
+// 7. Footer gallery: 3×3 grid with a pop-out full view
+//    The full photo grows out of the tile that was clicked and shrinks back
+//    into it on close. Arrows / arrow keys step through; Esc or a click on
+//    the dark area closes. Visitors who turn off animations get no zoom.
+document.querySelectorAll('.gallery--grid').forEach((section) => {
+  const tiles = [...section.querySelectorAll('.grid-photo')];
+  const dialog = section.querySelector('.photo-pop');
+  if (!tiles.length || !dialog || typeof dialog.showModal !== 'function') return;
+  const img = dialog.querySelector('.photo-pop__img');
+  const caption = dialog.querySelector('.lightbox__caption');
+  const count = dialog.querySelector('.photo-pop__count');
+  let current = 0;
+  let closing = false;
+
+  // Animate between the tile and the big image (both directions)
+  const morph = (fromRect, toRect, reverse) => {
+    if (reduceMotion || !fromRect || !toRect.width) return Promise.resolve();
+    const dx = fromRect.left + fromRect.width / 2 - (toRect.left + toRect.width / 2);
+    const dy = fromRect.top + fromRect.height / 2 - (toRect.top + toRect.height / 2);
+    const s = Math.max(fromRect.width / toRect.width, fromRect.height / toRect.height);
+    const small = { transform: `translate(${dx}px, ${dy}px) scale(${s})`, opacity: 0.6 };
+    const big = { transform: 'none', opacity: 1 };
+    return img.animate(reverse ? [big, small] : [small, big],
+      { duration: 380, easing: 'cubic-bezier(.2,.7,.2,1)' }).finished.catch(() => {});
+  };
+
+  const show = (n) => {
+    current = (n + tiles.length) % tiles.length;
+    const tile = tiles[current];
+    const thumb = tile.querySelector('img');
+    img.src = tile.dataset.full || thumb.src;
+    img.alt = thumb.alt;
+    caption.textContent = tile.dataset.caption || '';
+    count.textContent = `${current + 1} / ${tiles.length}`;
+  };
+
+  const open = async (n) => {
+    show(n);
+    dialog.showModal();
+    if (!img.complete) await new Promise((r) => { img.onload = r; img.onerror = r; });
+    morph(tiles[current].getBoundingClientRect(), img.getBoundingClientRect(), false);
+  };
+
+  const close = async () => {
+    if (closing || !dialog.open) return;
+    closing = true;
+    tiles[current].scrollIntoView({ block: 'nearest' });
+    await morph(tiles[current].getBoundingClientRect(), img.getBoundingClientRect(), true);
+    dialog.close();
+    closing = false;
+  };
+
+  tiles.forEach((tile, n) => tile.addEventListener('click', () => open(n)));
+  dialog.querySelector('.lightbox__btn--prev').addEventListener('click', () => show(current - 1));
+  dialog.querySelector('.lightbox__btn--next').addEventListener('click', () => show(current + 1));
+  dialog.querySelector('.lightbox__close').addEventListener('click', close);
+  dialog.addEventListener('click', (e) => { if (e.target === dialog || e.target.classList.contains('lightbox__stage')) close(); });
+  dialog.addEventListener('cancel', (e) => { e.preventDefault(); close(); });   // Esc shrinks it back too
+  dialog.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') show(current - 1);
+    if (e.key === 'ArrowRight') show(current + 1);
+  });
+  dialog.addEventListener('close', () => tiles[current].focus({ preventScroll: true }));
+
+  // Swipe between photos on touch screens
+  let startX = null;
+  dialog.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; }, { passive: true });
+  dialog.addEventListener('touchend', (e) => {
+    if (startX === null) return;
+    const dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) > 40) show(current + (dx < 0 ? 1 : -1));
+    startX = null;
   });
 });
