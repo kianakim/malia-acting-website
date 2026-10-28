@@ -14,7 +14,7 @@
   <!-- Fonts: preconnect first so the font files start downloading sooner -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Lato:wght@400;700&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Lato:wght@400;700&family=Montserrat:wght@500;600;700&family=Caveat:wght@500;600&family=Permanent+Marker&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -67,7 +67,7 @@
     </div>
 
     <p class="eyebrow">Actor &nbsp;/&nbsp; Host &nbsp;/&nbsp; Model</p>
-    <h1 class="display hero__name">Malia Aiello</h1>
+    <h1 class="display hero__name"><span class="hero__line"><span>Malia</span></span> <span class="hero__line"><span>Aiello</span></span></h1>
 
     <div class="hero__actions">
       <a class="btn btn--light hero__reel-btn" href="https://youtu.be/REEL_VIDEO_ID" aria-expanded="false">
@@ -348,59 +348,80 @@
 <section class="section press-section" id="press" aria-labelledby="press-title">
   <div class="container">
     <h2 class="line-title line-title--dark" id="press-title">Press</h2>
-    <p class="section-intro">Interviews, features and TV appearances.</p>
+    <p class="section-intro">Reviews, interviews and TV appearances.</p>
 
-  <div class="press-grid">
+  <div class="press-grid" id="press-grid">
 
-    <a class="press-card" href="#" target="_blank" rel="noopener">
-      <span class="press-card__outlet press-card__outlet--serif">Star-Advertiser</span>
-      <p class="press-card__quote">“Malia Aiello brings Hawaiʻi's spirit to the screen”</p>
-      <p class="press-card__meta">Article <span aria-hidden="true">·</span> Month 2026</p>
-      <span class="link-arrow press-card__cta">Read article</span>
-    </a>
-
-    <a class="press-card" href="#" target="_blank" rel="noopener">
-      <span class="press-card__outlet press-card__outlet--bold">KITV4</span>
-      <p class="press-card__quote">Local talent shines in new Amazon series</p>
-      <p class="press-card__meta">TV segment <span aria-hidden="true">·</span> Month 2026</p>
-      <span class="link-arrow press-card__cta">Watch segment</span>
-    </a>
-
-    <a class="press-card" href="#" target="_blank" rel="noopener">
-      <span class="press-card__outlet press-card__outlet--caps">Hawaiʻi <small>Magazine</small></span>
-      <p class="press-card__quote">From Oʻahu to Hollywood</p>
-      <p class="press-card__meta">Feature <span aria-hidden="true">·</span> Month 2026</p>
-      <span class="link-arrow press-card__cta">Read article</span>
-    </a>
-
-    <!-- Video card: has a thumbnail. Use for hosting clips and TV appearances. -->
-    <a class="press-card press-card--media" href="#" target="_blank" rel="noopener">
+    <!-- Featured: TV segment with a photo. On laptops it spans two columns. -->
+    <a class="press-card press-card--media press-card--wide" href="https://www.hawaiinewsnow.com/2026/10/18/win-city-competition-nurtures-next-generation-hawaii-talent/" target="_blank" rel="noopener">
       <div class="card__media">
-        <img src="images/press-video.jpg" alt="" loading="lazy">
-        <span class="play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg></span>
+        <img src="images/press-hnn-win-the-city.jpg" alt="Malia and Win the City organizer Ty Tamagawa on the Sunrise set at Hawaii News Now" loading="lazy">
       </div>
       <div class="press-card__body">
-        <p class="press-card__quote">Watch: Malia hosts Honolulu Awakened</p>
-        <p class="press-card__meta">Hosting <span aria-hidden="true">·</span> Honolulu Awakened</p>
-        <span class="link-arrow press-card__cta">Watch video</span>
+        <span class="press-card__outlet press-card__outlet--bold">Hawaii News Now</span>
+        <p class="press-card__quote">“We have so much like mana across the island.”</p>
+        <p class="press-card__meta">Sunrise interview <span aria-hidden="true">·</span> Win the City <span aria-hidden="true">·</span> October 2026</p>
+        <span class="link-arrow press-card__cta">Read &amp; watch</span>
       </div>
     </a>
 
-    <!-- PLACEHOLDER cards: replace with real coverage or delete -->
-    <a class="press-card" href="#" target="_blank" rel="noopener">
-      <span class="press-card__outlet press-card__outlet--serif">Outlet Name</span>
-      <p class="press-card__quote">Headline or short quote from the article goes here</p>
-      <p class="press-card__meta">Interview <span aria-hidden="true">·</span> Month 2026</p>
+    <!-- Headline taken from the link; check it matches the live article. -->
+    <a class="press-card" href="https://hoodline.com/2026/10/new-hawaii-talent-contest-lets-keiki-compete-for-cash-mentorship/" target="_blank" rel="noopener">
+      <span class="press-card__outlet press-card__outlet--serif">Hoodline</span>
+      <p class="press-card__quote">New Hawaiʻi talent contest lets keiki compete for cash, mentorship</p>
+      <p class="press-card__meta">Article <span aria-hidden="true">·</span> Win the City <span aria-hidden="true">·</span> October 2026</p>
       <span class="link-arrow press-card__cta">Read article</span>
     </a>
 
-    <a class="press-card" href="#" target="_blank" rel="noopener">
-      <span class="press-card__outlet press-card__outlet--caps">Outlet Name</span>
-      <p class="press-card__quote">Headline or short quote from the article goes here</p>
-      <p class="press-card__meta">Podcast <span aria-hidden="true">·</span> Month 2026</p>
-      <span class="link-arrow press-card__cta">Listen</span>
+    <!-- PLACEHOLDER: fill in who posted it, what it is, and the date. -->
+    <a class="press-card" href="https://www.instagram.com/p/DM8ejjlhPYy/" target="_blank" rel="noopener">
+      <span class="press-card__outlet press-card__outlet--caps">Instagram</span>
+      <p class="press-card__quote">POST DESCRIPTION GOES HERE</p>
+      <p class="press-card__meta">Instagram post <span aria-hidden="true">·</span> DATE</p>
+      <span class="link-arrow press-card__cta">View post</span>
     </a>
 
+    <a class="press-card" href="https://www.filmfocusonline.com/post/do-i-shock-u-like-lightning-review" target="_blank" rel="noopener">
+      <span class="press-card__outlet press-card__outlet--serif">Film Focus Online</span>
+      <p class="press-card__quote">“The chemistry between Omar Maskati and Malia Aiello is brilliant to watch.”</p>
+      <p class="press-card__meta">Review <span aria-hidden="true">·</span> <cite>Do I Shock U Like Lightning</cite> <span aria-hidden="true">·</span> April 2025</p>
+      <span class="link-arrow press-card__cta">Read review</span>
+    </a>
+
+    <a class="press-card" href="https://filmthreat.com/reviews/do-i-shock-u-like-lightning/" target="_blank" rel="noopener">
+      <span class="press-card__outlet press-card__outlet--bold">Film Threat</span>
+      <p class="press-card__quote">“As Ellie and Wardy, Malia Aiello and Omar Maskati are just too cute together.”</p>
+      <p class="press-card__meta">Review <span aria-hidden="true">·</span> <cite>Do I Shock U Like Lightning</cite> <span aria-hidden="true">·</span> March 2025</p>
+      <span class="link-arrow press-card__cta">Read review</span>
+    </a>
+
+    <a class="press-card" href="https://cinemacy.com/do-i-shock-u-like-lightning-review/" target="_blank" rel="noopener">
+      <span class="press-card__outlet press-card__outlet--caps">Cinemacy</span>
+      <p class="press-card__quote">“A Singing Portrait of Optimism”</p>
+      <p class="press-card__meta">Review <span aria-hidden="true">·</span> <cite>Do I Shock U Like Lightning</cite> <span aria-hidden="true">·</span> March 2025</p>
+      <span class="link-arrow press-card__cta">Read review</span>
+    </a>
+
+    <a class="press-card" href="https://www.kumukahua.org/mendokusai-program" target="_blank" rel="noopener">
+      <span class="press-card__outlet press-card__outlet--serif">Kumu Kahua Theatre</span>
+      <p class="press-card__quote">Ililani in <cite>Mendokusai</cite> by Eric Stack</p>
+      <p class="press-card__meta">Stage <span aria-hidden="true">·</span> Program &amp; cast bio <span aria-hidden="true">·</span> 2022–23 season</p>
+      <span class="link-arrow press-card__cta">View program</span>
+    </a>
+
+    <a class="press-card" href="https://seat42f.com/ncis-hawaii-season-1-episode-15-photos-pirates/" target="_blank" rel="noopener">
+      <span class="press-card__outlet press-card__outlet--bold">Seat42F</span>
+      <p class="press-card__quote"><cite>NCIS: Hawaiʻi</cite>, Season 1, Episode 15, “Pirates”</p>
+      <p class="press-card__meta">TV guest cast <span aria-hidden="true">·</span> CBS <span aria-hidden="true">·</span> March 2022</p>
+      <span class="link-arrow press-card__cta">See episode</span>
+    </a>
+
+  </div>
+
+  <!-- Phones only: the first 3 cards show, and this button reveals 3 more at a time.
+       Change the number with data-step. Hidden on tablets and laptops. -->
+  <div class="press-more">
+    <button class="btn press-more__btn" type="button" aria-controls="press-grid" data-step="3" hidden>Load more</button>
   </div>
   </div>
 </section>
@@ -432,10 +453,6 @@
           <p>Host</p>
           <p>2026</p>
         </div>
-        <a class="up-next__soon" href="#">
-          <span class="eyebrow">Coming soon</span>
-          <svg viewBox="0 0 170 16" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M0 8h168M161 1l7 7-7 7"/></svg>
-        </a>
       </div>
     </div>
     <div class="up-next__slide" role="group" aria-roledescription="slide" aria-label="2 of 3" style="--focus: 72% 30%; --focus-mobile: 73% 30%;" hidden>
@@ -447,10 +464,6 @@
           <p>Actor</p>
           <p>TBA</p>
         </div>
-        <a class="up-next__soon" href="#">
-          <span class="eyebrow">Coming soon</span>
-          <svg viewBox="0 0 170 16" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M0 8h168M161 1l7 7-7 7"/></svg>
-        </a>
       </div>
     </div>
     <div class="up-next__slide" role="group" aria-roledescription="slide" aria-label="3 of 3" style="--focus: 74% 30%; --focus-mobile: 76% 25%;" hidden>
@@ -462,10 +475,6 @@
           <p>Role</p>
           <p>Year</p>
         </div>
-        <a class="up-next__soon" href="#">
-          <span class="eyebrow">Learn more</span>
-          <svg viewBox="0 0 170 16" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M0 8h168M161 1l7 7-7 7"/></svg>
-        </a>
       </div>
     </div>
   </div>
@@ -500,64 +509,74 @@
       <a href="mailto:lashauna@blissmodels.com">lashauna@blissmodels.com</a>
       <p class="footer-contact__note">For bookings and casting inquiries:</p>
       <a class="btn btn--light btn--pill" href="contact.html">Contact Me</a>
-    </div>
-
-    <div class="footer-gallery gallery--grid" aria-labelledby="footer-gallery-title">
-      <h3 class="eyebrow footer-gallery__title" id="footer-gallery-title">Gallery</h3>
-      <div class="photo-grid">
-        <button class="grid-photo" type="button" data-full="images/gallery/g1.jpg" data-caption="On Sunrise, Hawaii News Now" aria-label="View photo: On Sunrise, Hawaii News Now">
-          <img src="images/gallery/g1-thumb.jpg" alt="Malia and a guest on the set of Sunrise on Hawaii News Now, both in Win the City shirts" loading="lazy" width="600" height="600">
-        </button>
-        <button class="grid-photo" type="button" data-full="images/gallery/g2.jpg" data-caption="Behind the scenes, on set" aria-label="View photo: Behind the scenes, on set">
-          <img src="images/gallery/g2-thumb.jpg" alt="A camera monitor on an outdoor set showing Malia seated at a table during a take" loading="lazy" width="600" height="600">
-        </button>
-        <button class="grid-photo" type="button" data-full="images/gallery/g3.jpg" data-caption="With the cast after the show" aria-label="View photo: With the cast after the show">
-          <img src="images/gallery/g3-thumb.jpg" alt="Malia with a group of cast members in lei, and a dog, on a small stage" loading="lazy" width="600" height="600">
-        </button>
-        <button class="grid-photo" type="button" data-full="images/gallery/g4.jpg" data-caption="On set, commercial shoot" aria-label="View photo: On set, commercial shoot">
-          <img src="images/gallery/g4-thumb.jpg" alt="A camera monitor showing Malia laughing beside a man playing ukulele at a backyard party" loading="lazy" width="600" height="600">
-        </button>
-        <button class="grid-photo" type="button" data-full="images/gallery/g5.jpg" data-caption="Behind the camera, commercial shoot" aria-label="View photo: Behind the camera, commercial shoot">
-          <img src="images/gallery/g5-thumb.jpg" alt="A camera operator filming Malia and a ukulele player outdoors" loading="lazy" width="600" height="600">
-        </button>
-        <button class="grid-photo" type="button" data-full="images/gallery/g6.jpg" data-caption="Mānoa Valley Theatre, with the cast" aria-label="View photo: Mānoa Valley Theatre, with the cast">
-          <img src="images/gallery/g6-thumb.jpg" alt="Malia with the cast in lei and holding flowers in front of a Mānoa Valley Theatre backdrop" loading="lazy" width="600" height="600">
-        </button>
-        <button class="grid-photo" type="button" data-full="images/gallery/g7.jpg" data-caption="The Polynesian AF Show, curtain call" aria-label="View photo: The Polynesian AF Show, curtain call">
-          <img src="images/gallery/g7-thumb.jpg" alt="Malia with the cast on stage at The Polynesian AF Show" loading="lazy" width="600" height="600">
-        </button>
-        <button class="grid-photo" type="button" data-full="images/gallery/g8.jpg" data-caption="Guest on Sunrise, Hawaii News Now" aria-label="View photo: Guest on Sunrise, Hawaii News Now">
-          <img src="images/gallery/g8-thumb.jpg" alt="Malia seated between the host and a guest on the Sunrise set" loading="lazy" width="600" height="600">
-        </button>
-        <button class="grid-photo" type="button" data-full="images/gallery/g9.jpg" data-caption="Behind the scenes, film set" aria-label="View photo: Behind the scenes, film set">
-          <img src="images/gallery/g9-thumb.jpg" alt="Crew with a boom mic and camera filming Malia laughing on a bed with a co-star" loading="lazy" width="600" height="600">
-        </button>
-      </div>
-    <dialog class="lightbox photo-pop" aria-label="Gallery photo, full size">
-      <div class="lightbox__stage"><img class="photo-pop__img" alt=""></div>
-      <p class="lightbox__caption"></p>
-      <button class="lightbox__btn lightbox__btn--prev" type="button" aria-label="Previous photo">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
-      </button>
-      <button class="lightbox__btn lightbox__btn--next" type="button" aria-label="Next photo">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
-      </button>
-      <button class="lightbox__close" type="button" aria-label="Close" autofocus>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
-      </button>
-      <p class="photo-pop__count" aria-hidden="true"></p>
-    </dialog>
-    </div>
-
-    <div class="footer-col footer-follow">
-      <h3 class="eyebrow">Follow</h3>
-      <div class="social">
+      <nav class="social footer-contact__social" aria-label="Malia's profiles">
         <a href="https://www.instagram.com/maliaaiello" target="_blank" rel="noopener" aria-label="Instagram">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor"/></svg>
         </a>
         <a class="imdb" href="https://www.imdb.com/name/nm13404895/" target="_blank" rel="noopener" aria-label="IMDb">IMDb</a>
+        <a class="wordmark" href="https://resumes.actorsaccess.com/maliaaiello" target="_blank" rel="noopener">Actors Access</a>
+      </nav>
+    </div>
+
+    <div class="footer-gallery gallery--grid" aria-labelledby="footer-gallery-title">
+      <h3 class="eyebrow footer-gallery__title" id="footer-gallery-title">Behind the Scenes</h3>
+      <!-- BEHIND THE SCENES: clicking a tile grows the photo to fill the 3×3,
+           then a gaffer-tape label (data-tape, 1–3 words) presses on and a
+           sticky note (data-note) slaps onto the corner. Leave data-note out
+           for no note. data-caption is read out to screen readers.
+           PLACEHOLDER COPY below: Malia should rewrite these in her own words. -->
+      <div class="bts-board">
+      <div class="photo-grid">
+        <button class="grid-photo" type="button" data-tape="SUNRISE · HNN" data-note="Talking Win the City on Sunrise. Shakas mandatory." data-full="images/gallery/g1.jpg" data-caption="On Sunrise, Hawaii News Now" aria-label="View photo: On Sunrise, Hawaii News Now">
+          <img src="images/gallery/g1-thumb.jpg" alt="Malia and a guest on the set of Sunrise on Hawaii News Now, both in Win the City shirts" loading="lazy" width="600" height="600">
+        </button>
+        <button class="grid-photo" type="button" data-tape="ON SET" data-note="The view from video village." data-full="images/gallery/g2.jpg" data-caption="Behind the scenes, on set" aria-label="View photo: Behind the scenes, on set">
+          <img src="images/gallery/g2-thumb.jpg" alt="A camera monitor on an outdoor set showing Malia seated at a table during a take" loading="lazy" width="600" height="600">
+        </button>
+        <button class="grid-photo" type="button" data-tape="CAST NIGHT" data-note="Post-show with this crew. The dog stole the show." data-full="images/gallery/g3.jpg" data-caption="With the cast after the show" aria-label="View photo: With the cast after the show">
+          <img src="images/gallery/g3-thumb.jpg" alt="Malia with a group of cast members in lei, and a dog, on a small stage" loading="lazy" width="600" height="600">
+        </button>
+        <button class="grid-photo" type="button" data-tape="ROLLING" data-note="Ukulele, sunshine, take after take." data-full="images/gallery/g4.jpg" data-caption="On set, commercial shoot" aria-label="View photo: On set, commercial shoot">
+          <img src="images/gallery/g4-thumb.jpg" alt="A camera monitor showing Malia laughing beside a man playing ukulele at a backyard party" loading="lazy" width="600" height="600">
+        </button>
+        <button class="grid-photo" type="button" data-tape="COMMERCIAL" data-note="The camera rig is bigger than me." data-full="images/gallery/g5.jpg" data-caption="Behind the camera, commercial shoot" aria-label="View photo: Behind the camera, commercial shoot">
+          <img src="images/gallery/g5-thumb.jpg" alt="A camera operator filming Malia and a ukulele player outdoors" loading="lazy" width="600" height="600">
+        </button>
+        <button class="grid-photo" type="button" data-tape="MĀNOA VALLEY" data-note="Lei count: lost track." data-full="images/gallery/g6.jpg" data-caption="Mānoa Valley Theatre, with the cast" aria-label="View photo: Mānoa Valley Theatre, with the cast">
+          <img src="images/gallery/g6-thumb.jpg" alt="Malia with the cast in lei and holding flowers in front of a Mānoa Valley Theatre backdrop" loading="lazy" width="600" height="600">
+        </button>
+        <button class="grid-photo" type="button" data-tape="POLYNESIAN AF" data-note="Curtain call at The Polynesian AF Show." data-full="images/gallery/g7.jpg" data-caption="The Polynesian AF Show, curtain call" aria-label="View photo: The Polynesian AF Show, curtain call">
+          <img src="images/gallery/g7-thumb.jpg" alt="Malia with the cast on stage at The Polynesian AF Show" loading="lazy" width="600" height="600">
+        </button>
+        <button class="grid-photo" type="button" data-tape="SUNRISE · HNN" data-note="Back on the Sunrise couch." data-full="images/gallery/g8.jpg" data-caption="Guest on Sunrise, Hawaii News Now" aria-label="View photo: Guest on Sunrise, Hawaii News Now">
+          <img src="images/gallery/g8-thumb.jpg" alt="Malia seated between the host and a guest on the Sunrise set" loading="lazy" width="600" height="600">
+        </button>
+        <button class="grid-photo" type="button" data-tape="FILM SET" data-note="Boom mic in every shot of this one." data-full="images/gallery/g9.jpg" data-caption="Behind the scenes, film set" aria-label="View photo: Behind the scenes, film set">
+          <img src="images/gallery/g9-thumb.jpg" alt="Crew with a boom mic and camera filming Malia laughing on a bed with a co-star" loading="lazy" width="600" height="600">
+        </button>
+      </div>
+      <!-- The grown photo. Hidden until a tile is clicked. -->
+      <div class="bts-stage" role="dialog" aria-label="Behind-the-scenes photo" hidden>
+        <figure class="bts-view">
+          <img class="bts-view__img" alt="">
+          <span class="tape bts-view__tape" aria-hidden="true"></span>
+          <figcaption class="visually-hidden"></figcaption>
+        </figure>
+        <aside class="bts-note" hidden><p></p></aside>
+        <button class="bts-btn bts-btn--prev" type="button" aria-label="Previous photo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+        </button>
+        <button class="bts-btn bts-btn--next" type="button" aria-label="Next photo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+        </button>
+        <button class="bts-btn bts-btn--close" type="button" aria-label="Close photo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+        <p class="bts-count" aria-hidden="true"></p>
+      </div>
       </div>
     </div>
+
   </div>
 
   <div class="container footer-bottom">

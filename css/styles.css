@@ -310,8 +310,8 @@ a:hover .play { transform: scale(1.08); background: rgba(21,48,47,.5); }
 .social .imdb { font-family: var(--font-caps); font-weight: 700; font-size: .8rem; letter-spacing: .02em; }
 
 /* --- Footer ---
-   One teal band: contact | 3×3 gallery | social links, then a thin bottom
-   row. The Contact page uses only the bottom row (.site-footer--slim), since its details are already on the page. */
+   One teal band: contact (with profile links) | 3×3 Behind the Scenes
+   gallery, then a thin bottom row. The Contact page uses only the bottom row (.site-footer--slim), since its details are already on the page. */
 .site-footer { color: var(--on-dark); background: var(--teal-900); }
 .footer-grid {
   display: grid;
@@ -323,8 +323,6 @@ a:hover .play { transform: scale(1.08); background: rgba(21,48,47,.5); }
 .footer-col h3 { margin-bottom: 10px; }
 .footer-col p, .footer-col a:not(.btn) { font-size: .8rem; color: var(--on-dark-soft); line-height: 1.7; }
 .footer-col a:not(.btn):hover { color: var(--on-dark); }
-.footer-follow { justify-self: end; }
-.footer-follow .social a { color: var(--on-dark); }
 .footer-bottom {
   display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
   padding-block: 16px 22px;
@@ -358,6 +356,27 @@ a:hover .play { transform: scale(1.08); background: rgba(21,48,47,.5); }
   width: 100%; height: 100%;
   object-fit: cover;
   object-position: var(--focus, 70% 25%);
+  /* Entrance: the photo starts slightly zoomed and dim, then settles into
+     its normal framing once (2.5s). Turned off for visitors who reduce motion. */
+  transform-origin: 62% 40%;            /* zooms out toward Malia, not the corner */
+  animation: hero-settle 2.6s cubic-bezier(.22, .61, .36, 1) both;
+}
+/* Entrance, part 2: the text arrives in order while the photo settles.
+   Eyebrow fades up, each line of the name slides up from behind a mask,
+   then the button and scroll arrow appear. Finished in about 1.8s.
+   Visitors who reduce motion see everything in place immediately. */
+.hero__line { display: inline-block; overflow: hidden; padding-bottom: .08em; margin-bottom: -.08em; vertical-align: top; }
+.hero__line > span { display: inline-block; animation: hero-line-up .95s cubic-bezier(.2, .7, .2, 1) backwards; animation-delay: .55s; }
+.hero__line + .hero__line > span { animation-delay: .72s; }
+.hero__content .eyebrow { animation: hero-fade-up .8s cubic-bezier(.2, .7, .2, 1) .3s backwards; }
+.hero__actions          { animation: hero-fade-up .8s cubic-bezier(.2, .7, .2, 1) 1.1s backwards; }
+.hero__scroll           { animation: hero-fade-in 1s ease 1.6s backwards; }
+@keyframes hero-line-up { from { transform: translateY(105%); } }
+@keyframes hero-fade-up { from { opacity: 0; transform: translateY(14px); } }
+@keyframes hero-fade-in { from { opacity: 0; } }   /* "from" only, so each ends at its normal style */
+@keyframes hero-settle {
+  from { transform: scale(1.06); filter: brightness(.82); }
+  to   { transform: none;        filter: none; }
 }
 /* Tablets: the frame is narrower, so slide the crop right to keep her face in view */
 @media (min-width: 761px) and (max-width: 1024px) {
@@ -595,9 +614,9 @@ a:hover .play { transform: scale(1.08); background: rgba(21,48,47,.5); }
 }
 .up-next__inner {
   display: grid;
-  /* fixed middle column so the text sits in the same place on every slide;
-     long project names wrap instead of pushing "Coming soon" over the photo */
-  grid-template-columns: auto clamp(230px, 24vw, 330px) auto;
+  /* fixed second column so the text sits in the same place on every slide;
+     long project names wrap instead of running over the photo */
+  grid-template-columns: auto clamp(230px, 24vw, 330px);
   justify-content: start;
   align-items: center;
   gap: clamp(28px, 4vw, 56px);
@@ -607,10 +626,7 @@ a:hover .play { transform: scale(1.08); background: rgba(21,48,47,.5); }
 }
 .up-next .line-title { letter-spacing: .26em; }
 .up-next .line-title::after { width: 92px; opacity: .8; }
-.up-next__item {
-  padding-right: clamp(28px, 4vw, 56px);
-  border-right: 1px solid rgba(244,240,232,.45);
-}
+.up-next__item { padding-left: clamp(28px, 4vw, 56px); border-left: 1px solid rgba(244,240,232,.45); }
 .up-next__name {
   font-family: var(--font-display); font-weight: 500;
   font-size: clamp(1.15rem, 1.7vw, 1.4rem); letter-spacing: .2em; text-transform: uppercase;
@@ -621,10 +637,6 @@ a:hover .play { transform: scale(1.08); background: rgba(21,48,47,.5); }
   letter-spacing: var(--track-caps); text-transform: uppercase;
   color: var(--on-dark); line-height: 2.1;
 }
-.up-next__soon { display: grid; gap: 12px; padding-block: 10px; color: var(--on-dark); }
-.up-next__soon .eyebrow { font-size: .6rem; color: var(--on-dark); }
-.up-next__soon svg { width: 170px; height: 16px; transition: transform .25s var(--ease); }
-.up-next__soon:hover svg { transform: translateX(6px); }
 
 /* Controls: pause button + one short line per slide. The current line
    fills up over the interval, so people can see when the next flip comes. */
@@ -761,15 +773,13 @@ a:hover .play { transform: scale(1.08); background: rgba(21,48,47,.5); }
   }
   .up-next__slide::before { background: linear-gradient(180deg, rgba(21,48,47,0) 0, rgba(21,48,47,0) 45vw, var(--teal-900) 75vw); }
   .up-next__inner { grid-template-columns: 1fr; gap: 20px; min-height: 0; margin-top: -36px; padding-top: 0; padding-bottom: 72px; text-shadow: none; }
-  .up-next__item { padding: 0 0 20px; border-right: 0; border-bottom: 1px solid rgba(244,240,232,.35); }
-  .up-next__soon svg { width: 130px; }
+  .up-next__item { padding: 0; border-left: 0; }
   .up-next__controls { bottom: 18px; }
   .up-next__pause, .up-next__dot { height: 44px; }      /* comfortable tap targets */
   .up-next__pause { width: 44px; }
 
   /* Footer: single centered column, Let's Work Together first */
   .footer-grid { grid-template-columns: 1fr; gap: 28px; text-align: center; }
-  .footer-follow { justify-self: center; }
   .social { justify-content: center; }
   .footer-bottom { justify-content: center; text-align: center; }
 }
@@ -926,6 +936,26 @@ html:has(dialog[open]) { overflow: hidden; }   /* stop the page scrolling behind
 }
 .press-grid .press-card--media .press-card__quote { font-size: 1.15rem; }
 
+/* Featured card: on laptops it spans two columns with the photo on the left */
+@media (min-width: 1025px) {
+  .press-grid .press-card--wide { grid-column: span 2; flex-direction: row; }
+  .press-grid .press-card--wide .card__media { flex: 0 0 52%; aspect-ratio: auto; }
+  .press-grid .press-card--wide .card__media img { position: absolute; inset: 0; }
+  .press-grid .press-card--wide .press-card__body { justify-content: center; padding: 26px 30px; }
+  .press-grid .press-card--wide .press-card__quote { font-size: 1.45rem; }
+}
+.press-card cite { font-style: italic; }
+
+/* "Load more" on phones: cards past the first few are tucked away until asked for */
+.press-more { display: none; }
+@media (max-width: 760px) {
+  .press-grid .press-card.is-tucked { display: none; }
+  .press-more { display: flex; justify-content: center; margin-top: 22px; }
+  .press-more__btn { min-width: 200px; }
+  .press-more__btn[hidden] { display: none; }
+  .press-grid .press-card.is-revealed { animation: hero-fade-up .5s cubic-bezier(.2, .7, .2, 1) backwards; }
+}
+
 /* Type and date, e.g. "Article · March 2026" */
 .press-card__meta { font-size: .76rem; color: var(--ink-soft); }
 .press-card__cta { margin-top: auto; padding-top: 6px; }
@@ -1017,39 +1047,148 @@ html:has(dialog[open]) { overflow: hidden; }   /* stop the page scrolling behind
 .grid-photo:hover::after, .grid-photo:focus-visible::after { opacity: 1; transform: none; }
 .photo-grid:has(.grid-photo:hover) .grid-photo:not(:hover) img { filter: saturate(.7) brightness(.92); }   /* gently dims the others */
 
-.photo-pop .lightbox__stage img { border-radius: 3px; box-shadow: 0 30px 80px -20px rgba(0,0,0,.6); }
-.photo-pop__count {
-  position: absolute; top: clamp(18px, 3.4vw, 40px); left: clamp(14px, 3vw, 34px);
-  font-family: var(--font-caps); font-size: .62rem; font-weight: 600; letter-spacing: .16em; color: var(--on-dark-soft);
-}
 @media (max-width: 760px) {
   .photo-grid { gap: 4px; }
   .grid-photo { border-radius: 2px; }
   .grid-photo::after { display: none; }
 }
 
-/* Footer layout: contact | gallery | follow */
+/* Footer layout: contact (left) | Behind the Scenes gallery (right).
+   The gallery column is capped so tiles stay about 150px and the footer
+   doesn't turn into a tall photo wall. */
 .footer-grid--gallery {
-  grid-template-columns: minmax(0, 1fr) minmax(0, 420px) minmax(0, 1fr);
-  gap: clamp(28px, 4vw, 56px);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 470px);
+  gap: clamp(28px, 5vw, 72px);
 }
+.footer-contact__social { margin-top: 26px; gap: 22px; }
+.footer-contact__social .wordmark { font-family: var(--font-caps); font-weight: 600; font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; color: var(--on-dark); }
 .footer-contact .section-title { margin-bottom: 22px; color: var(--on-dark); font-size: 1.05rem; }
 .footer-contact__note { margin-top: 18px; }
 .footer-contact .btn { margin-top: 10px; }
-.footer-gallery__title { margin-bottom: 12px; text-align: center; }
+.footer-gallery__title { margin-bottom: 14px; }
 .footer-gallery .photo-grid { gap: 6px; }
 .footer-gallery .grid-photo { background: var(--teal-800); }
 .footer-gallery .grid-photo::after { width: 24px; height: 24px; right: 6px; bottom: 6px; background-size: 11px; }
 .footer-gallery .photo-grid:has(.grid-photo:hover) .grid-photo:not(:hover) img { filter: brightness(.7); }
 
 @media (max-width: 1024px) {
-  .footer-grid--gallery { grid-template-columns: minmax(0, 1fr) minmax(0, 340px) minmax(0, .7fr); }
+  .footer-grid--gallery { grid-template-columns: minmax(0, 1fr) minmax(0, 360px); }
 }
 @media (max-width: 760px) {
-  /* Phones: contact first, then the gallery full width, then social */
+  /* Phones: Behind the Scenes gallery first, full width, then contact and profile links */
   .footer-grid--gallery { grid-template-columns: 1fr; }
-  .footer-contact { order: 0; }
-  .footer-gallery { order: 1; }
-  .footer-follow { order: 2; }
+  .footer-gallery { order: -1; }
+  .footer-gallery__title { text-align: center; }
   .footer-gallery .photo-grid { gap: 4px; }
+}
+
+
+
+/* ==========================================================================
+   10. BEHIND THE SCENES: photo grows in place, tape label, sticky note
+   ========================================================================== */
+.visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.bts-board { position: relative; }
+
+/* Laptop hint: a corner of tape peeks in when you hover a tile */
+.footer-gallery .grid-photo::after { display: none; }
+@media (hover: hover) {
+  .footer-gallery .grid-photo::before {
+    content: ""; position: absolute; z-index: 2; top: 7px; left: -9px; width: 46px; height: 14px;
+    background: repeating-linear-gradient(90deg, rgba(0,0,0,.04) 0 2px, transparent 2px 5px), rgba(240, 235, 222, .92);
+    box-shadow: 0 1px 2px rgba(0,0,0,.3);
+    transform: rotate(-38deg) translate(-14px, -6px); opacity: 0;
+    transition: opacity .25s var(--ease), transform .3s var(--ease);
+  }
+  .footer-gallery .grid-photo:hover::before,
+  .footer-gallery .grid-photo:focus-visible::before { opacity: 1; transform: rotate(-38deg) translate(0, 0); }
+}
+
+/* The stage covers the 3×3 exactly; the photo sits inside it, whole (not cropped) */
+.bts-stage {
+  position: absolute; inset: 0; z-index: 5;
+  border-radius: 3px;
+  background: rgba(8, 20, 19, .94);
+}
+.bts-stage[hidden] { display: none; }
+.bts-view { position: absolute; margin: 0; }
+.bts-view__img {
+  display: block; width: 100%; height: 100%;
+  object-fit: cover;                    /* matches the tile at the start of the grow */
+  border-radius: 2px; box-shadow: 0 18px 40px -16px rgba(0,0,0,.7);
+}
+
+/* Gaffer-tape label on the grown photo */
+.tape {
+  --tilt: -4deg;
+  position: absolute; z-index: 2;
+  padding: 6px 14px 5px;
+  font-family: "Permanent Marker", "Comic Sans MS", cursive;
+  font-size: clamp(.7rem, 1.1vw, .86rem); line-height: 1.15; letter-spacing: .05em;
+  color: #1f1e1b; white-space: nowrap;
+  background:
+    repeating-linear-gradient(90deg, rgba(0,0,0,.03) 0 2px, transparent 2px 5px),
+    rgba(240, 235, 222, .95);
+  box-shadow: 0 1px 3px rgba(0,0,0,.35);
+  clip-path: polygon(0 10%, 3% 0, 97% 5%, 100% 14%, 98% 34%, 100% 52%, 97% 72%, 100% 92%, 96% 100%, 4% 96%, 0 88%, 3% 68%, 0 50%, 2% 30%);
+  transform: rotate(var(--tilt));
+  pointer-events: none;
+}
+.tape:empty { display: none; }
+.bts-view__tape { top: 12px; left: -12px; }
+.bts-view__tape.is-in { animation: tape-on .45s cubic-bezier(.2, .9, .3, 1.25) .32s backwards; }
+@keyframes tape-on {
+  from { opacity: 0; transform: translateY(-8px) rotate(calc(var(--tilt) - 9deg)) scale(1.3); box-shadow: 0 8px 14px rgba(0,0,0,.35); }
+}
+
+/* Sticky note: hangs off the bottom-left, spilling toward the contact column */
+.bts-note {
+  --note: #f6e27f;
+  position: absolute; left: -64px; bottom: -26px; z-index: 6;
+  width: 190px;
+  padding: 18px 16px 20px;
+  background: linear-gradient(170deg, rgba(255,255,255,.25), rgba(255,255,255,0) 40%), var(--note);
+  color: #2b2925;
+  font-family: "Caveat", "Comic Sans MS", cursive; font-weight: 600;
+  font-size: 1.3rem; line-height: 1.15;
+  transform: rotate(-3deg);
+  box-shadow: 0 16px 22px -12px rgba(0,0,0,.6), inset 0 -14px 20px -16px rgba(0,0,0,.25);
+  pointer-events: none;
+}
+.bts-note::before {                       /* a scrap of clear tape holding it on */
+  content: ""; position: absolute; top: -10px; left: 50%; width: 64px; height: 20px;
+  transform: translateX(-50%) rotate(3deg);
+  background: rgba(240, 235, 222, .55); box-shadow: 0 1px 2px rgba(0,0,0,.15);
+}
+.bts-note[hidden] { display: none; }
+.bts-note[data-color="pink"] { --note: #f6c9d0; }
+.bts-note[data-color="blue"] { --note: #bfe1dc; }
+.bts-note.is-in { animation: note-slap .5s cubic-bezier(.2, .9, .3, 1.25) .55s backwards; }
+@keyframes note-slap {
+  from { opacity: 0; transform: translate(-24px, -30px) rotate(-14deg) scale(1.25); }
+}
+
+/* Small controls over the photo */
+.bts-btn {
+  position: absolute; z-index: 7;
+  display: grid; place-items: center; width: 34px; height: 34px; padding: 0;
+  border: 1px solid rgba(244,240,232,.4); border-radius: 50%;
+  background: rgba(8, 20, 19, .6); color: var(--on-dark); cursor: pointer;
+  transition: background .2s var(--ease), color .2s var(--ease);
+}
+.bts-btn:hover { background: var(--on-dark); color: var(--teal-900); }
+.bts-btn svg { width: 16px; height: 16px; }
+.bts-btn--prev  { left: 8px;  top: 50%; transform: translateY(-50%); }
+.bts-btn--next  { right: 8px; top: 50%; transform: translateY(-50%); }
+.bts-btn--close { right: 8px; top: 8px; }
+.bts-count {
+  position: absolute; z-index: 7; right: 12px; bottom: 9px; margin: 0;
+  font-family: var(--font-caps); font-size: .58rem; font-weight: 600; letter-spacing: .16em; color: var(--on-dark-soft);
+}
+.bts-stage .bts-btn, .bts-stage .bts-count { animation: hero-fade-in .3s ease .3s backwards; }
+
+@media (max-width: 760px) {
+  /* Phones: nothing to spill into, so the note tucks inside the bottom-right corner */
+  .bts-note { left: auto; right: 10px; bottom: 30px; width: min(170px, 48vw); padding: 14px 12px 16px; font-size: 1.12rem; transform: rotate(3deg); }
+  .bts-view__tape { left: -6px; }
 }

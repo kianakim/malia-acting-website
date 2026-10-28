@@ -292,77 +292,150 @@ cards.forEach((card) => card.addEventListener('click', (e) => {
   if (openInViewer({ youtube: card.href, text }, card)) e.preventDefault();   // otherwise it opens YouTube
 }));
 
-// 7. Footer gallery: 3×3 grid with a pop-out full view
-//    The full photo grows out of the tile that was clicked and shrinks back
-//    into it on close. Arrows / arrow keys step through; Esc or a click on
-//    the dark area closes. Visitors who turn off animations get no zoom.
-document.querySelectorAll('.gallery--grid').forEach((section) => {
-  const tiles = [...section.querySelectorAll('.grid-photo')];
-  const dialog = section.querySelector('.photo-pop');
-  if (!tiles.length || !dialog || typeof dialog.showModal !== 'function') return;
-  const img = dialog.querySelector('.photo-pop__img');
-  const caption = dialog.querySelector('.lightbox__caption');
-  const count = dialog.querySelector('.photo-pop__count');
-  let current = 0;
-  let closing = false;
+// 7. Behind the Scenes (footer 3×3)
+//    Clicking a tile grows that photo out of the tile until it fills the 3×3,
+//    shown whole. Then its gaffer-tape label presses on and its sticky note
+//    slaps onto the corner. Arrows / arrow keys / swipe step through; ×, Esc
+//    or a click on the dark area shrinks it back into its tile.
+//    Visitors who turn off animations get no grow, just the photo.
+document.querySelectorAll('.footer-gallery').forEach((section) => {
+  const board = section.querySelector('.bts-board');
+  const stage = section.querySelector('.bts-stage');
+  if (!board || !stage) return;
+  const tiles = [...board.querySelectorAll('.grid-photo')];
+  const view = stage.querySelector('.bts-view');
+  const img = stage.querySelector('.bts-view__img');
+  const tape = stage.querySelector('.bts-view__tape');
+  const cap = stage.querySelector('figcaption');
+  const note = stage.querySelector('.bts-note');
+  const count = stage.querySelector('.bts-count');
+  const closeBtn = stage.querySelector('.bts-btn--close');
+  const tilts = [-5, 3, -3, 4, -4, 2, -6, 5, -2];
+  const colors = ['yellow', 'pink', 'blue'];
+  const DUR = 420;
+  const EASE = 'cubic-bezier(.2,.7,.2,1)';
+  let current = -1;
+  let busy = false;
 
-  // Animate between the tile and the big image (both directions)
-  const morph = (fromRect, toRect, reverse) => {
-    if (reduceMotion || !fromRect || !toRect.width) return Promise.resolve();
-    const dx = fromRect.left + fromRect.width / 2 - (toRect.left + toRect.width / 2);
-    const dy = fromRect.top + fromRect.height / 2 - (toRect.top + toRect.height / 2);
-    const s = Math.max(fromRect.width / toRect.width, fromRect.height / toRect.height);
-    const small = { transform: `translate(${dx}px, ${dy}px) scale(${s})`, opacity: 0.6 };
-    const big = { transform: 'none', opacity: 1 };
-    return img.animate(reverse ? [big, small] : [small, big],
-      { duration: 380, easing: 'cubic-bezier(.2,.7,.2,1)' }).finished.catch(() => {});
+  // Where a tile sits, measured inside the board
+  const tileBox = (n) => {
+    const b = board.getBoundingClientRect(), t = tiles[n].getBoundingClientRect();
+    return { left: t.left - b.left, top: t.top - b.top, width: t.width, height: t.height };
+  };
+  // The photo's final box: as large as fits in the 3×3, keeping its shape, centred
+  const fitBox = () => {
+    const W = board.clientWidth, H = board.clientHeight, pad = 10;
+    const r = (img.naturalWidth || 1) / (img.naturalHeight || 1);
+    let w = W - pad * 2, h = w / r;
+    if (h > H - pad * 2) { h = H - pad * 2; w = h * r; }
+    return { left: (W - w) / 2, top: (H - h) / 2, width: w, height: h };
+  };
+  const px = (b) => ({ left: `${b.left}px`, top: `${b.top}px`, width: `${b.width}px`, height: `${b.height}px` });
+  const place = (b) => Object.assign(view.style, px(b));
+  const animateBox = (from, to) => (reduceMotion
+    ? Promise.resolve()
+    : view.animate([px(from), px(to)], { duration: DUR, easing: EASE }).finished.catch(() => {}));
+  const restart = (el) => { el.classList.remove('is-in'); void el.offsetWidth; el.classList.add('is-in'); };
+
+  // Fill in the label, note, caption and counter for photo n
+  const dress = (n) => {
+    const tile = tiles[n];
+    tape.textContent = tile.dataset.tape || '';
+    tape.style.setProperty('--tilt', `${tilts[n % tilts.length]}deg`);
+    const text = tile.dataset.note || '';
+    note.hidden = !text;
+    note.querySelector('p').textContent = text;
+    note.dataset.color = colors[n % colors.length];
+    cap.textContent = tile.dataset.caption || '';
+    img.alt = tile.querySelector('img').alt;
+    count.textContent = `${n + 1} / ${tiles.length}`;
+    restart(tape);
+    if (text) restart(note);
   };
 
-  const show = (n) => {
-    current = (n + tiles.length) % tiles.length;
-    const tile = tiles[current];
-    const thumb = tile.querySelector('img');
-    img.src = tile.dataset.full || thumb.src;
-    img.alt = thumb.alt;
-    caption.textContent = tile.dataset.caption || '';
-    count.textContent = `${current + 1} / ${tiles.length}`;
+  const load = async (n) => {
+    img.src = tiles[n].dataset.full;
+    try { await img.decode(); } catch (e) { /* shows once loaded */ }
   };
 
   const open = async (n) => {
-    show(n);
-    dialog.showModal();
-    if (!img.complete) await new Promise((r) => { img.onload = r; img.onerror = r; });
-    morph(tiles[current].getBoundingClientRect(), img.getBoundingClientRect(), false);
+    if (busy) return;
+    busy = true;
+    current = n;
+    await load(n);
+    stage.hidden = false;
+    dress(n);
+    const from = tileBox(n), to = fitBox();
+    place(to);
+    if (!reduceMotion) stage.animate([{ backgroundColor: 'rgba(8,20,19,0)' }, {}], { duration: DUR, easing: EASE });
+    closeBtn.focus({ preventScroll: true });
+    await animateBox(from, to);
+    busy = false;
+  };
+
+  const go = async (n) => {
+    if (busy || current < 0) return;
+    busy = true;
+    const from = fitBox();
+    current = (n + tiles.length) % tiles.length;
+    if (!reduceMotion) await view.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 140, fill: 'forwards' }).finished.catch(() => {});
+    await load(current);
+    const to = fitBox();
+    place(to);
+    dress(current);
+    view.getAnimations().forEach((a) => a.cancel());
+    if (!reduceMotion) {
+      view.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200 });
+      await animateBox(from, to);
+    }
+    busy = false;
   };
 
   const close = async () => {
-    if (closing || !dialog.open) return;
-    closing = true;
-    tiles[current].scrollIntoView({ block: 'nearest' });
-    await morph(tiles[current].getBoundingClientRect(), img.getBoundingClientRect(), true);
-    dialog.close();
-    closing = false;
+    if (busy || stage.hidden) return;
+    busy = true;
+    const to = tileBox(current);
+    note.hidden = true;
+    tape.textContent = '';
+    if (!reduceMotion) {
+      stage.animate([{}, { backgroundColor: 'rgba(8,20,19,0)' }], { duration: DUR, easing: EASE });
+      await animateBox(fitBox(), to);
+    }
+    stage.hidden = true;
+    tiles[current].focus({ preventScroll: true });
+    busy = false;
   };
 
-  tiles.forEach((tile, n) => tile.addEventListener('click', () => open(n)));
-  dialog.querySelector('.lightbox__btn--prev').addEventListener('click', () => show(current - 1));
-  dialog.querySelector('.lightbox__btn--next').addEventListener('click', () => show(current + 1));
-  dialog.querySelector('.lightbox__close').addEventListener('click', close);
-  dialog.addEventListener('click', (e) => { if (e.target === dialog || e.target.classList.contains('lightbox__stage')) close(); });
-  dialog.addEventListener('cancel', (e) => { e.preventDefault(); close(); });   // Esc shrinks it back too
-  dialog.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowLeft') show(current - 1);
-    if (e.key === 'ArrowRight') show(current + 1);
+  // Start fetching a full-size photo as soon as someone shows interest in a tile
+  tiles.forEach((tile, n) => {
+    tile.addEventListener('click', () => open(n));
+    const warm = () => { const p = new Image(); p.src = tile.dataset.full; };
+    tile.addEventListener('pointerenter', warm, { once: true });
+    tile.addEventListener('touchstart', warm, { once: true, passive: true });
   });
-  dialog.addEventListener('close', () => tiles[current].focus({ preventScroll: true }));
+  stage.querySelector('.bts-btn--prev').addEventListener('click', () => go(current - 1));
+  stage.querySelector('.bts-btn--next').addEventListener('click', () => go(current + 1));
+  closeBtn.addEventListener('click', close);
+  stage.addEventListener('click', (e) => { if (e.target === stage) close(); });
+  stage.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowLeft') go(current - 1);
+    if (e.key === 'ArrowRight') go(current + 1);
+  });
+  // Clicking anywhere else on the page closes it too
+  document.addEventListener('click', (e) => {
+    if (!stage.hidden && !busy && !board.contains(e.target)) close();
+  });
+  // Keep it fitted if the window is resized while open
+  addEventListener('resize', () => { if (!stage.hidden) place(fitBox()); });
 
   // Swipe between photos on touch screens
   let startX = null;
-  dialog.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; }, { passive: true });
-  dialog.addEventListener('touchend', (e) => {
+  stage.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; }, { passive: true });
+  stage.addEventListener('touchend', (e) => {
     if (startX === null) return;
     const dx = e.changedTouches[0].clientX - startX;
-    if (Math.abs(dx) > 40) show(current + (dx < 0 ? 1 : -1));
+    if (Math.abs(dx) > 40) go(current + (dx < 0 ? 1 : -1));
     startX = null;
   });
 });
@@ -479,4 +552,37 @@ document.querySelectorAll('.up-next').forEach((root) => {
     if (e.key === 'ArrowRight') go(current + 1, 'next');
     if (e.key === 'ArrowLeft') go(current - 1, 'prev');
   });
+});
+
+
+// 9. Press: "Load more" on phones
+//    Phones show the first 3 press cards; the button reveals 3 more at a time
+//    and disappears once everything is showing. Tablets and laptops show every
+//    card and never see the button. Without JavaScript, all cards show.
+document.querySelectorAll('.press-section').forEach((section) => {
+  const cards = [...section.querySelectorAll('.press-grid .press-card')];
+  const btn = section.querySelector('.press-more__btn');
+  if (!btn) return;
+  const step = Number(btn.dataset.step) || 3;
+  if (cards.length <= step) return;
+  let shown = step;
+
+  const update = () => {
+    cards.forEach((card, i) => card.classList.toggle('is-tucked', i >= shown));
+    const left = cards.length - shown;
+    btn.hidden = left <= 0;
+    btn.textContent = `Load more (${left})`;
+  };
+
+  btn.addEventListener('click', () => {
+    const first = shown;
+    shown = Math.min(shown + step, cards.length);
+    update();
+    cards.slice(first, shown).forEach((card) => card.classList.add('is-revealed'));
+    // Move keyboard / screen-reader focus to the first new card
+    cards[first].focus({ preventScroll: true });
+    if (btn.hidden) cards[first].scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'nearest' });
+  });
+
+  update();
 });
