@@ -42,7 +42,7 @@
 <main>
 
 <!-- ===================== HERO =====================
-     PHOTO: swap the <img> src. --focus / --focus-mobile set which part of the
+     PHOTO: swap the <img> src. --focus / --focus-tablet / --focus-mobile set which part of the
      photo stays in frame (first value = horizontal, second = vertical).
 
      OPTIONAL MOVING BACKGROUND: to use a short silent loop instead of the photo,
@@ -54,7 +54,7 @@
      REEL: "Watch Reel" opens a player right here in the hero, above the name.
      Paste the reel's YouTube link (Share → Copy link; unlisted is fine) into
      the button's href below. Without JavaScript the button opens YouTube. -->
-<section class="hero" id="top" style="--focus: 60% 18%; --focus-mobile: 58% 12%;">
+<section class="hero" id="top" style="--focus: 30% 30%; --focus-tablet: 62% 30%; --focus-mobile: 66% 30%;">
   <img class="hero__bg" src="images/hero.jpg" alt="" fetchpriority="high">
 
   <div class="container hero__content">
@@ -118,8 +118,9 @@
 
 
 <!-- ===================== HEADSHOTS (carousel) =====================
-     5 to 10 photos. Add or remove <button class="headshot"> blocks freely; the
-     arrows and the progress bar adjust on their own. Portrait photos (4:5) fit best.
+     12 photos. Add or remove <button class="headshot"> blocks freely; the
+     arrows and the progress bar adjust on their own. Portrait photos (2:3) fit best:
+     thumbnails are 800x1200 and the larger view uses the -large file (1200x1800).
      Clicking a photo opens it larger. data-full can point to a bigger
      version of the same photo (e.g. 1600px tall) for that larger view. -->
 <section class="headshots" id="headshots" aria-labelledby="headshots-title">
@@ -138,35 +139,41 @@
 
     <div class="carousel" data-carousel>
       <div class="carousel__track" tabindex="0" aria-label="Headshots, scroll sideways for more">
-        <button class="headshot" type="button" data-full="images/headshots/headshot-1.jpg" aria-label="View headshot 1 larger">
-          <img src="images/headshots/headshot-1.jpg" alt="Headshot of Malia, natural light" loading="lazy">
+        <button class="headshot" type="button" data-full="images/headshots/headshot-1-large.jpg" aria-label="View headshot 1 larger">
+          <img src="images/headshots/headshot-1.jpg" alt="Malia against a deep blue studio backdrop, hand in her hair" loading="lazy" width="800" height="1200">
         </button>
-        <button class="headshot" type="button" data-full="images/headshots/headshot-2.jpg" aria-label="View headshot 2 larger">
-          <img src="images/headshots/headshot-2.jpg" alt="Malia on the beach" loading="lazy">
+        <button class="headshot" type="button" data-full="images/headshots/headshot-2-large.jpg" aria-label="View headshot 2 larger">
+          <img src="images/headshots/headshot-2.jpg" alt="Malia against a deep blue studio backdrop, arms folded" loading="lazy" width="800" height="1200">
         </button>
-        <button class="headshot" type="button" data-full="images/headshots/headshot-3.jpg" aria-label="View headshot 3 larger">
-          <img src="images/headshots/headshot-3.jpg" alt="Close-up headshot of Malia" loading="lazy">
+        <button class="headshot" type="button" data-full="images/headshots/headshot-3-large.jpg" aria-label="View headshot 3 larger">
+          <img src="images/headshots/headshot-3.jpg" alt="Malia smiling in a black tank top on a black backdrop" loading="lazy" width="800" height="1200">
         </button>
-        <button class="headshot" type="button" data-full="images/headshots/headshot-4.jpg" aria-label="View headshot 4 larger">
-          <img src="images/headshots/headshot-4.jpg" alt="Full-length lifestyle photo of Malia" loading="lazy">
+        <button class="headshot" type="button" data-full="images/headshots/headshot-4-large.jpg" aria-label="View headshot 4 larger">
+          <img src="images/headshots/headshot-4.jpg" alt="Full-length photo of Malia in a black top and jeans" loading="lazy" width="800" height="1200">
         </button>
-        <button class="headshot" type="button" data-full="images/headshots/headshot-5.jpg" aria-label="View headshot 5 larger">
-          <img src="images/headshots/headshot-5.jpg" alt="Black-and-white editorial portrait of Malia" loading="lazy">
+        <button class="headshot" type="button" data-full="images/headshots/headshot-5-large.jpg" aria-label="View headshot 5 larger">
+          <img src="images/headshots/headshot-5.jpg" alt="Close-up of Malia smiling in a cream knit cardigan" loading="lazy" width="800" height="1200">
         </button>
-        <button class="headshot" type="button" data-full="images/headshots/headshot-6.jpg" aria-label="View headshot 6 larger">
-          <img src="images/headshots/headshot-6.jpg" alt="Malia by the ocean" loading="lazy">
+        <button class="headshot" type="button" data-full="images/headshots/headshot-6-large.jpg" aria-label="View headshot 6 larger">
+          <img src="images/headshots/headshot-6.jpg" alt="Malia in a light blue top outdoors in front of greenery" loading="lazy" width="800" height="1200">
         </button>
-        <button class="headshot" type="button" data-full="images/headshots/headshot-7.jpg" aria-label="View headshot 7 larger">
-          <img src="images/headshots/headshot-7.jpg" alt="Malia with a plumeria in her hair" loading="lazy">
+        <button class="headshot" type="button" data-full="images/headshots/headshot-7-large.jpg" aria-label="View headshot 7 larger">
+          <img src="images/headshots/headshot-7.jpg" alt="Malia in a woven hat among flowering trees" loading="lazy" width="800" height="1200">
         </button>
-        <button class="headshot" type="button" data-full="images/headshots/headshot-8.jpg" aria-label="View headshot 8 larger">
-          <img src="images/headshots/headshot-8.jpg" alt="Three-quarter headshot of Malia" loading="lazy">
+        <button class="headshot" type="button" data-full="images/headshots/headshot-8-large.jpg" aria-label="View headshot 8 larger">
+          <img src="images/headshots/headshot-8.jpg" alt="Malia in a green halter top outdoors at golden hour" loading="lazy" width="800" height="1200">
         </button>
-        <button class="headshot" type="button" data-full="images/headshots/headshot-9.jpg" aria-label="View headshot 9 larger">
-          <img src="images/headshots/headshot-9.jpg" alt="Profile portrait of Malia with a hibiscus" loading="lazy">
+        <button class="headshot" type="button" data-full="images/headshots/headshot-9-large.jpg" aria-label="View headshot 9 larger">
+          <img src="images/headshots/headshot-9.jpg" alt="Malia smiling with a plumeria in her hair" loading="lazy" width="800" height="1200">
         </button>
-        <button class="headshot" type="button" data-full="images/headshots/headshot-10.jpg" aria-label="View headshot 10 larger">
-          <img src="images/headshots/headshot-10.jpg" alt="Headshot of Malia, golden hour" loading="lazy">
+        <button class="headshot" type="button" data-full="images/headshots/headshot-10-large.jpg" aria-label="View headshot 10 larger">
+          <img src="images/headshots/headshot-10.jpg" alt="Malia in a denim jacket leaning against a weathered tree" loading="lazy" width="800" height="1200">
+        </button>
+        <button class="headshot" type="button" data-full="images/headshots/headshot-11-large.jpg" aria-label="View headshot 11 larger">
+          <img src="images/headshots/headshot-11.jpg" alt="Malia in a navy strapless dress on the rocks by the ocean" loading="lazy" width="800" height="1200">
+        </button>
+        <button class="headshot" type="button" data-full="images/headshots/headshot-12-large.jpg" aria-label="View headshot 12 larger">
+          <img src="images/headshots/headshot-12.jpg" alt="Malia seated in a cream halter top at golden hour" loading="lazy" width="800" height="1200">
         </button>
       </div>
     </div>
@@ -399,55 +406,77 @@
 </section>
 
 
-<!-- ===================== UP NEXT =====================
-     Three cards, one per upcoming project, all visible at once. Works with
-     1, 2 or 3 (the row centers itself); on phones the cards swipe sideways.
-     STATUS TAG: short words like "Filming", "Premieres Spring 2027",
-       "Coming soon".
-     PHOTO: portrait, 4:5 (e.g. 800×1000). A still, poster or on-set shot.
-     LINK: the card links to the project (trailer, network page, press). -->
-<section class="section upnext-cards" id="up-next" aria-labelledby="next-title">
-  <div class="container">
-    <h2 class="line-title line-title--dark" id="next-title">Up Next</h2>
-    <p class="section-intro">What Malia is working on now.</p>
-    <div class="project-row">
-      <article class="project-card">
-        <a class="project-card__link" href="#">
-          <div class="project-card__media">
-            <img src="images/upnext/project-1.jpg" alt="Malia with a hibiscus in her hair" loading="lazy">
-            <span class="status">Premieres 2026</span>
-          </div>
-          <p class="project-card__role">Host</p>
-          <h3 class="project-card__title">Win the City</h3>
-          <p class="project-card__meta">Live series · 2026</p>
-          <span class="project-card__cta">Learn more <svg viewBox="0 0 40 16" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M0 8h38M31 1l7 7-7 7"/></svg></span>
+<!-- ===================== UP NEXT (rotating slides) =====================
+     Each slide is one upcoming project: its own wide photo and text, in the
+     same layout. The band flips left to the next slide every 6 seconds,
+     pauses while someone hovers over it, uses the controls, or scrolls it out
+     of view, and can be paused with the button. Visitors who turn off
+     animations on their device get a gentle fade and no auto-advance.
+
+     ADD A SLIDE: copy a whole <div class="up-next__slide"> block (and give
+     every slide after the first the word hidden, as below). The indicator
+     lines and the "1 of 3" labels update on their own.
+     PHOTOS: wide images (about 3:1 or wider, ~2400px across) with Malia
+     toward the right. --focus / --focus-mobile choose what stays in frame
+     (horizontal %, vertical %); phones show a 4:3 crop around her face.
+     TIMING / EFFECT: data-interval is in milliseconds. data-transition can
+     be "flip" (turns like a cube) or "slide" (slides straight across). -->
+<section class="up-next" id="up-next" aria-labelledby="next-title" aria-roledescription="carousel" data-interval="6000" data-transition="flip">
+  <div class="up-next__slides">
+    <div class="up-next__slide" role="group" aria-roledescription="slide" aria-label="1 of 3" style="--focus: 72% 40%; --focus-mobile: 87% 40%;">
+      <img class="up-next__photo" src="images/up-next.jpg" alt="" loading="lazy">
+      <div class="container up-next__inner">
+        <h2 class="line-title" id="next-title">Up Next</h2>
+        <div class="up-next__item">
+          <h3 class="up-next__name">Win the City</h3>
+          <p>Host</p>
+          <p>2026</p>
+        </div>
+        <a class="up-next__soon" href="#">
+          <span class="eyebrow">Coming soon</span>
+          <svg viewBox="0 0 170 16" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M0 8h168M161 1l7 7-7 7"/></svg>
         </a>
-      </article>
-      <article class="project-card">
-        <a class="project-card__link" href="#">
-          <div class="project-card__media">
-            <img src="images/upnext/project-2.jpg" alt="Malia in a three-quarter portrait" loading="lazy">
-            <span class="status">Filming</span>
-          </div>
-          <p class="project-card__role">Actor</p>
-          <h3 class="project-card__title">Next Acting Project</h3>
-          <p class="project-card__meta">Feature film</p>
-          <span class="project-card__cta">Coming soon <svg viewBox="0 0 40 16" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M0 8h38M31 1l7 7-7 7"/></svg></span>
-        </a>
-      </article>
-      <article class="project-card">
-        <a class="project-card__link" href="#">
-          <div class="project-card__media">
-            <img src="images/upnext/project-3.jpg" alt="Malia on set" loading="lazy">
-            <span class="status">Coming soon</span>
-          </div>
-          <p class="project-card__role">Role</p>
-          <h3 class="project-card__title">Project Title</h3>
-          <p class="project-card__meta">Network or studio</p>
-          <span class="project-card__cta">Learn more <svg viewBox="0 0 40 16" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M0 8h38M31 1l7 7-7 7"/></svg></span>
-        </a>
-      </article>
+      </div>
     </div>
+    <div class="up-next__slide" role="group" aria-roledescription="slide" aria-label="2 of 3" style="--focus: 72% 30%; --focus-mobile: 73% 30%;" hidden>
+      <img class="up-next__photo" src="images/up-next-2.jpg" alt="" loading="lazy">
+      <div class="container up-next__inner">
+        <p class="line-title" aria-hidden="true">Up Next</p>
+        <div class="up-next__item">
+          <h3 class="up-next__name">Next Acting Project</h3>
+          <p>Actor</p>
+          <p>TBA</p>
+        </div>
+        <a class="up-next__soon" href="#">
+          <span class="eyebrow">Coming soon</span>
+          <svg viewBox="0 0 170 16" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M0 8h168M161 1l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="up-next__slide" role="group" aria-roledescription="slide" aria-label="3 of 3" style="--focus: 74% 30%; --focus-mobile: 76% 25%;" hidden>
+      <img class="up-next__photo" src="images/up-next-3.jpg" alt="" loading="lazy">
+      <div class="container up-next__inner">
+        <p class="line-title" aria-hidden="true">Up Next</p>
+        <div class="up-next__item">
+          <h3 class="up-next__name">Project Title</h3>
+          <p>Role</p>
+          <p>Year</p>
+        </div>
+        <a class="up-next__soon" href="#">
+          <span class="eyebrow">Learn more</span>
+          <svg viewBox="0 0 170 16" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M0 8h168M161 1l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide controls: pause button + one indicator line per slide (added by the script) -->
+  <div class="container up-next__controls">
+    <button class="up-next__pause" type="button" aria-label="Pause slides">
+      <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>
+      <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>
+    </button>
+    <div class="up-next__dots"></div>
   </div>
 </section>
 
@@ -476,32 +505,32 @@
     <div class="footer-gallery gallery--grid" aria-labelledby="footer-gallery-title">
       <h3 class="eyebrow footer-gallery__title" id="footer-gallery-title">Gallery</h3>
       <div class="photo-grid">
-        <button class="grid-photo" type="button" data-full="images/gallery/g6.jpg" data-caption="Beach day, Waimānalo" aria-label="View photo: Beach day, Waimānalo">
-          <img src="images/gallery/g6.jpg" alt="Malia at the beach" loading="lazy">
+        <button class="grid-photo" type="button" data-full="images/gallery/g1.jpg" data-caption="On Sunrise, Hawaii News Now" aria-label="View photo: On Sunrise, Hawaii News Now">
+          <img src="images/gallery/g1-thumb.jpg" alt="Malia and a guest on the set of Sunrise on Hawaii News Now, both in Win the City shirts" loading="lazy" width="600" height="600">
         </button>
-        <button class="grid-photo" type="button" data-full="images/gallery/g2.jpg" data-caption="Lifestyle shoot" aria-label="View photo: Lifestyle shoot">
-          <img src="images/gallery/g2.jpg" alt="Malia in a lifestyle portrait" loading="lazy">
+        <button class="grid-photo" type="button" data-full="images/gallery/g2.jpg" data-caption="Behind the scenes, on set" aria-label="View photo: Behind the scenes, on set">
+          <img src="images/gallery/g2-thumb.jpg" alt="A camera monitor on an outdoor set showing Malia seated at a table during a take" loading="lazy" width="600" height="600">
         </button>
-        <button class="grid-photo" type="button" data-full="images/gallery/g3.jpg" data-caption="On set, Kona Brewing" aria-label="View photo: On set, Kona Brewing">
-          <img src="images/gallery/g3.jpg" alt="Malia on set of a commercial" loading="lazy">
+        <button class="grid-photo" type="button" data-full="images/gallery/g3.jpg" data-caption="With the cast after the show" aria-label="View photo: With the cast after the show">
+          <img src="images/gallery/g3-thumb.jpg" alt="Malia with a group of cast members in lei, and a dog, on a small stage" loading="lazy" width="600" height="600">
         </button>
-        <button class="grid-photo" type="button" data-full="images/gallery/g4.jpg" data-caption="Plumeria season" aria-label="View photo: Plumeria season">
-          <img src="images/gallery/g4.jpg" alt="Malia with a plumeria in her hair" loading="lazy">
+        <button class="grid-photo" type="button" data-full="images/gallery/g4.jpg" data-caption="On set, commercial shoot" aria-label="View photo: On set, commercial shoot">
+          <img src="images/gallery/g4-thumb.jpg" alt="A camera monitor showing Malia laughing beside a man playing ukulele at a backyard party" loading="lazy" width="600" height="600">
         </button>
-        <button class="grid-photo" type="button" data-full="images/gallery/g8.jpg" data-caption="Editorial portrait" aria-label="View photo: Editorial portrait">
-          <img src="images/gallery/g8.jpg" alt="Malia in black and white" loading="lazy">
+        <button class="grid-photo" type="button" data-full="images/gallery/g5.jpg" data-caption="Behind the camera, commercial shoot" aria-label="View photo: Behind the camera, commercial shoot">
+          <img src="images/gallery/g5-thumb.jpg" alt="A camera operator filming Malia and a ukulele player outdoors" loading="lazy" width="600" height="600">
         </button>
-        <button class="grid-photo" type="button" data-full="images/gallery/g1.jpg" data-caption="Golden hour" aria-label="View photo: Golden hour">
-          <img src="images/gallery/g1.jpg" alt="Malia on the beach" loading="lazy">
+        <button class="grid-photo" type="button" data-full="images/gallery/g6.jpg" data-caption="Mānoa Valley Theatre, with the cast" aria-label="View photo: Mānoa Valley Theatre, with the cast">
+          <img src="images/gallery/g6-thumb.jpg" alt="Malia with the cast in lei and holding flowers in front of a Mānoa Valley Theatre backdrop" loading="lazy" width="600" height="600">
         </button>
-        <button class="grid-photo" type="button" data-full="images/gallery/g7.jpg" data-caption="Between takes" aria-label="View photo: Between takes">
-          <img src="images/gallery/g7.jpg" alt="Malia on set" loading="lazy">
+        <button class="grid-photo" type="button" data-full="images/gallery/g7.jpg" data-caption="The Polynesian AF Show, curtain call" aria-label="View photo: The Polynesian AF Show, curtain call">
+          <img src="images/gallery/g7-thumb.jpg" alt="Malia with the cast on stage at The Polynesian AF Show" loading="lazy" width="600" height="600">
         </button>
-        <button class="grid-photo" type="button" data-full="images/gallery/g5.jpg" data-caption="Hosting, Honolulu Awakened" aria-label="View photo: Hosting, Honolulu Awakened">
-          <img src="images/gallery/g5.jpg" alt="Malia hosting outdoors" loading="lazy">
+        <button class="grid-photo" type="button" data-full="images/gallery/g8.jpg" data-caption="Guest on Sunrise, Hawaii News Now" aria-label="View photo: Guest on Sunrise, Hawaii News Now">
+          <img src="images/gallery/g8-thumb.jpg" alt="Malia seated between the host and a guest on the Sunrise set" loading="lazy" width="600" height="600">
         </button>
-        <button class="grid-photo" type="button" data-full="images/gallery/g9.jpg" data-caption="Campaign shoot" aria-label="View photo: Campaign shoot">
-          <img src="images/gallery/g9.jpg" alt="Malia in a campaign shoot" loading="lazy">
+        <button class="grid-photo" type="button" data-full="images/gallery/g9.jpg" data-caption="Behind the scenes, film set" aria-label="View photo: Behind the scenes, film set">
+          <img src="images/gallery/g9-thumb.jpg" alt="Crew with a boom mic and camera filming Malia laughing on a bed with a co-star" loading="lazy" width="600" height="600">
         </button>
       </div>
     <dialog class="lightbox photo-pop" aria-label="Gallery photo, full size">
@@ -523,13 +552,10 @@
     <div class="footer-col footer-follow">
       <h3 class="eyebrow">Follow</h3>
       <div class="social">
-        <a href="https://instagram.com/" aria-label="Instagram">
+        <a href="https://www.instagram.com/maliaaiello" target="_blank" rel="noopener" aria-label="Instagram">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor"/></svg>
         </a>
-        <a class="imdb" href="https://www.imdb.com/" aria-label="IMDb">IMDb</a>
-        <a href="mailto:malia@malianaiello.com" aria-label="Email">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="1"/><path d="M3.5 6l8.5 7 8.5-7"/></svg>
-        </a>
+        <a class="imdb" href="https://www.imdb.com/name/nm13404895/" target="_blank" rel="noopener" aria-label="IMDb">IMDb</a>
       </div>
     </div>
   </div>
@@ -537,9 +563,9 @@
   <div class="container footer-bottom">
     <span>© <span id="year">2026</span> Malia Aiello. All rights reserved.</span>
     <nav aria-label="Profiles">
-      <a href="https://www.imdb.com/">IMDb</a>
-      <a href="#">Actors Access</a>
-      <a href="https://instagram.com/">Instagram</a>
+      <a href="https://www.imdb.com/name/nm13404895/" target="_blank" rel="noopener">IMDb</a>
+      <a href="https://resumes.actorsaccess.com/maliaaiello" target="_blank" rel="noopener">Actors Access</a>
+      <a href="https://www.instagram.com/maliaaiello" target="_blank" rel="noopener">Instagram</a>
     </nav>
   </div>
 </footer>

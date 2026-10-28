@@ -7,7 +7,7 @@
    2. Base / reset
    3. Layout helpers (container, section)
    4. Components (buttons, header, cards, section titles, footer)
-   5. Homepage sections: hero, bio, headshots, Up Next
+   5. Homepage sections: hero, bio, headshots, Up Next (rotating slides)
    6. Responsive adjustments for 4–5
    7. Contact page
    8. Featured Work and Press
@@ -26,7 +26,7 @@
   --line:         #d8d0c1;   /* hairlines and dividers */
   --ink:          #1e2727;   /* headings and body text */
   --ink-soft:     #5f6662;   /* captions, meta text */
-  --teal-900:     #15302f;   /* footer */
+  --teal-900:     #15302f;   /* Up Next band, footer */
   --teal-800:     #1c3d3b;   /* active tabs, hero fallback */
   --teal-600:     #2c5a55;   /* primary button fill */
   --on-dark:      #f4f0e8;   /* text on teal / photos */
@@ -359,16 +359,22 @@ a:hover .play { transform: scale(1.08); background: rgba(21,48,47,.5); }
   object-fit: cover;
   object-position: var(--focus, 70% 25%);
 }
+/* Tablets: the frame is narrower, so slide the crop right to keep her face in view */
+@media (min-width: 761px) and (max-width: 1024px) {
+  .hero__bg { object-position: var(--focus-tablet, var(--focus, 70% 25%)); }
+}
 .hero::after {
   content: ""; position: absolute; inset: 0; z-index: -1;
   background:
-    linear-gradient(90deg, rgba(14,34,33,.82) 0%, rgba(14,34,33,.45) 38%, rgba(14,34,33,0) 62%),
-    linear-gradient(0deg, rgba(14,34,33,.55) 0%, rgba(14,34,33,0) 35%),
-    linear-gradient(180deg, rgba(14,34,33,.55) 0%, rgba(14,34,33,0) 18%);   /* keeps the nav legible */
+    /* lighter shade so the bright sky shows; still darkest behind the text */
+    linear-gradient(90deg, rgba(14,34,33,.62) 0%, rgba(14,34,33,.30) 34%, rgba(14,34,33,0) 55%),
+    linear-gradient(0deg, rgba(14,34,33,.35) 0%, rgba(14,34,33,0) 30%),
+    linear-gradient(180deg, rgba(14,34,33,.38) 0%, rgba(14,34,33,0) 16%);   /* keeps the nav legible */
 }
 .hero .container { position: relative; padding-block: 140px clamp(48px, 8vw, 96px); }
 .hero__name {
-  font-size: clamp(3rem, 7.5vw, 6rem);
+  font-size: clamp(3rem, 6.4vw, 5.6rem);
+  max-width: 6.5em;          /* stacks "Malia / Aiello" so it stays clear of the photo */
   margin: 14px 0 18px;
 }
 .hero__actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 30px; }
@@ -496,7 +502,7 @@ a:hover .play { transform: scale(1.08); background: rgba(21,48,47,.5); }
 
 .headshot {
   flex: 0 0 calc((100% - 3 * var(--gap)) / 4);
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 2 / 3;              /* matches the photos, so nothing is cropped */
   padding: 0; border: 0;
   overflow: hidden;
   background: var(--paper);
@@ -551,49 +557,140 @@ a:hover .play { transform: scale(1.08); background: rgba(21,48,47,.5); }
 .lightbox__btn--next { right: clamp(10px, 3vw, 32px); top: 50%; transform: translateY(-50%); }
 .lightbox__close { top: clamp(10px, 3vw, 28px); right: clamp(10px, 3vw, 32px); }
 
-/* Status tag ("Premieres 2026", "Filming", "Coming soon") on Up Next cards */
-.status {
-  display: inline-block;
-  padding: .5em 1em;
-  border-radius: 999px;
-  font-family: var(--font-caps); font-size: .56rem; font-weight: 600;
-  letter-spacing: .16em; text-transform: uppercase; white-space: nowrap;
+/* --- Up Next (rotating slides) ---
+   Each slide is a wide photo (landscape left, Malia right) with the text on
+   a soft shade at the left. All slides sit in the same grid cell, so the
+   band is as tall as the tallest slide and nothing jumps when they change. */
+.up-next {
+  position: relative;
+  overflow: hidden;
+  background: var(--teal-900);          /* shows while the photos load */
+  color: var(--on-dark);
+  border-bottom: 1px solid rgba(244,240,232,.14);   /* separates it from the teal footer */
 }
+.up-next__slides { display: grid; perspective: 2000px; }
+.up-next__slide {
+  grid-area: 1 / 1;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--teal-900);
+  backface-visibility: hidden;
+}
+.up-next__slide[hidden] { display: none; }
+/* Once the script is running, only the current slide (and the one leaving) shows */
+.up-next.is-ready .up-next__slide:not(.is-active):not(.is-leaving) { visibility: hidden; }
+.up-next.is-ready .up-next__slide.is-active { z-index: 2; }
+.up-next.is-ready .up-next__slide.is-leaving { z-index: 1; }
 
-/* --- Up Next: three project cards ---
-   All projects visible at once, centred whether there are 1, 2 or 3. */
-.upnext-cards { background: var(--paper); }
-.project-row {
-  display: flex; justify-content: center; gap: clamp(16px, 2.5vw, 32px);
-  margin-top: clamp(22px, 3vw, 32px);
+.up-next__photo {
+  position: absolute; inset: 0; z-index: -2;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: var(--focus, 72% 40%);
 }
-.project-card { flex: 0 1 360px; }
-.project-card__link { display: block; }
-.project-card__media {
-  position: relative; aspect-ratio: 4 / 5; overflow: hidden;
-  border-radius: 4px; background: var(--paper-2);
+.up-next__slide::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(90deg, rgba(12,26,25,.42) 0%, rgba(12,26,25,.26) 40%, rgba(12,26,25,.06) 60%, rgba(12,26,25,0) 70%);
 }
-.project-card__media img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--ease); }
-.project-card__link:hover .project-card__media img { transform: scale(1.04); }
-.project-card__media .status { position: absolute; top: 14px; left: 14px; background: rgba(244,240,232,.94); color: var(--ink); }
-.project-card__role {
-  margin-top: 18px;
-  font-family: var(--font-caps); font-size: .6rem; font-weight: 600;
-  letter-spacing: var(--track-caps); text-transform: uppercase; color: var(--teal-600);
+.up-next__inner {
+  display: grid;
+  /* fixed middle column so the text sits in the same place on every slide;
+     long project names wrap instead of pushing "Coming soon" over the photo */
+  grid-template-columns: auto clamp(230px, 24vw, 330px) auto;
+  justify-content: start;
+  align-items: center;
+  gap: clamp(28px, 4vw, 56px);
+  min-height: clamp(190px, 15vw, 250px);   /* about the mock-up's proportions, plus room for the controls */
+  padding-block: 28px 44px;
+  text-shadow: 0 1px 12px rgba(12,26,25,.45);
 }
-.project-card__title {
-  margin-top: 6px;
+.up-next .line-title { letter-spacing: .26em; }
+.up-next .line-title::after { width: 92px; opacity: .8; }
+.up-next__item {
+  padding-right: clamp(28px, 4vw, 56px);
+  border-right: 1px solid rgba(244,240,232,.45);
+}
+.up-next__name {
   font-family: var(--font-display); font-weight: 500;
-  font-size: clamp(1.15rem, 1.6vw, 1.35rem); letter-spacing: .14em; text-transform: uppercase;
+  font-size: clamp(1.15rem, 1.7vw, 1.4rem); letter-spacing: .2em; text-transform: uppercase;
+  margin-bottom: 10px;
 }
-.project-card__meta { margin-top: 4px; font-size: .85rem; color: var(--ink-soft); }
-.project-card__cta {
-  display: inline-flex; align-items: center; gap: .8em; margin-top: 14px;
-  font-family: var(--font-caps); font-size: .6rem; font-weight: 600;
+.up-next__item p {
+  font-family: var(--font-caps); font-size: .7rem; font-weight: 500;
   letter-spacing: var(--track-caps); text-transform: uppercase;
+  color: var(--on-dark); line-height: 2.1;
 }
-.project-card__cta svg { width: 30px; height: 12px; transition: transform .25s var(--ease); }
-.project-card__link:hover .project-card__cta svg { transform: translateX(5px); }
+.up-next__soon { display: grid; gap: 12px; padding-block: 10px; color: var(--on-dark); }
+.up-next__soon .eyebrow { font-size: .6rem; color: var(--on-dark); }
+.up-next__soon svg { width: 170px; height: 16px; transition: transform .25s var(--ease); }
+.up-next__soon:hover svg { transform: translateX(6px); }
+
+/* Controls: pause button + one short line per slide. The current line
+   fills up over the interval, so people can see when the next flip comes. */
+.up-next__controls {
+  position: absolute; left: 0; right: 0; bottom: 12px; z-index: 3;
+  display: flex; align-items: center; gap: 10px;
+}
+.up-next__controls[hidden] { display: none; }
+.up-next__pause {
+  display: grid; place-items: center; width: 32px; height: 32px;
+  margin-left: -8px;
+  border: 0; background: none; color: var(--on-dark); cursor: pointer; opacity: .85;
+}
+.up-next__pause:hover { opacity: 1; }
+.up-next__pause svg { width: 13px; height: 13px; }
+.up-next__pause .icon-play,
+.up-next.is-paused .up-next__pause .icon-pause { display: none; }
+.up-next.is-paused .up-next__pause .icon-play { display: block; }
+.up-next__dots { display: flex; gap: 6px; }
+.up-next__dot {
+  position: relative; width: 34px; height: 32px;       /* tall hit area, thin visible line */
+  padding: 0; border: 0; background: none; cursor: pointer;
+}
+.up-next__dot::before,
+.up-next__dot::after {
+  content: ""; position: absolute; left: 0; top: 50%; height: 2px; margin-top: -1px;
+}
+.up-next__dot::before { right: 0; background: rgba(244,240,232,.35); }
+.up-next__dot::after { width: 0; background: var(--on-dark); }
+.up-next__dot[aria-current="true"]::after {
+  animation: dot-fill var(--interval, 6000ms) linear forwards;
+}
+.up-next.is-paused .up-next__dot[aria-current="true"]::after,
+.up-next.is-held .up-next__dot[aria-current="true"]::after,
+.up-next.is-offscreen .up-next__dot[aria-current="true"]::after { animation-play-state: paused; }
+@keyframes dot-fill { from { width: 0; } to { width: 100%; } }
+
+/* Transitions. "Flip" turns the band like a cube rotating left: the old
+   slide swings away to the left as the new one comes round from the right
+   (reversed when going back). --depth is half the band's width, set by the script. */
+.up-next[data-transition="flip"] .up-next__slide { transform-origin: 50% 50% calc(var(--depth, 600px) * -1); }
+.up-next__slide.anim-out-next  { animation: flip-out-next  var(--speed, 1s) cubic-bezier(.6,0,.25,1) both; }
+.up-next__slide.anim-in-next   { animation: flip-in-next   var(--speed, 1s) cubic-bezier(.6,0,.25,1) both; }
+.up-next__slide.anim-out-prev  { animation: flip-out-prev  var(--speed, 1s) cubic-bezier(.6,0,.25,1) both; }
+.up-next__slide.anim-in-prev   { animation: flip-in-prev   var(--speed, 1s) cubic-bezier(.6,0,.25,1) both; }
+@keyframes flip-out-next { from { transform: rotateY(0); }      to { transform: rotateY(-90deg); } }
+@keyframes flip-in-next  { from { transform: rotateY(90deg); }  to { transform: rotateY(0); } }
+@keyframes flip-out-prev { from { transform: rotateY(0); }      to { transform: rotateY(90deg); } }
+@keyframes flip-in-prev  { from { transform: rotateY(-90deg); } to { transform: rotateY(0); } }
+
+.up-next[data-transition="slide"] .up-next__slide.anim-out-next { animation-name: slide-out-next; }
+.up-next[data-transition="slide"] .up-next__slide.anim-in-next  { animation-name: slide-in-next; }
+.up-next[data-transition="slide"] .up-next__slide.anim-out-prev { animation-name: slide-out-prev; }
+.up-next[data-transition="slide"] .up-next__slide.anim-in-prev  { animation-name: slide-in-prev; }
+@keyframes slide-out-next { to { transform: translateX(-100%); } }
+@keyframes slide-in-next  { from { transform: translateX(100%); } }
+@keyframes slide-out-prev { to { transform: translateX(100%); } }
+@keyframes slide-in-prev  { from { transform: translateX(-100%); } }
+
+/* Reduced motion: a quick fade instead of movement */
+@media (prefers-reduced-motion: reduce) {
+  .up-next__slide.anim-out-next, .up-next__slide.anim-out-prev { animation: fade-out .4s ease both !important; }
+  .up-next__slide.anim-in-next,  .up-next__slide.anim-in-prev  { animation: fade-in .4s ease both !important; }
+}
+@keyframes fade-out { to { opacity: 0; } }
+@keyframes fade-in  { from { opacity: 0; } }
 
 
 /* 6. RESPONSIVE */
@@ -627,8 +724,8 @@ a:hover .play { transform: scale(1.08); background: rgba(21,48,47,.5); }
   .hero__bg { object-position: var(--focus-mobile, 60% 0%); }
   .hero::after {
     background:
-      linear-gradient(0deg, rgba(14,34,33,.92) 0%, rgba(14,34,33,.55) 45%, rgba(14,34,33,0) 70%),
-      linear-gradient(180deg, rgba(14,34,33,.5) 0%, rgba(14,34,33,0) 15%);
+      linear-gradient(0deg, rgba(14,34,33,.88) 0%, rgba(14,34,33,.45) 38%, rgba(14,34,33,0) 58%),
+      linear-gradient(180deg, rgba(14,34,33,.38) 0%, rgba(14,34,33,0) 14%);
   }
   .hero .container { padding-bottom: 36px; }
   .hero__scroll { display: none; }           /* the full-width button sits where the arrow would */
@@ -654,13 +751,21 @@ a:hover .play { transform: scale(1.08); background: rgba(21,48,47,.5); }
   .carousel__btn { width: 40px; height: 40px; }
   .lightbox__btn { top: auto; bottom: 20px; transform: none; }
 
-  /* Up Next: cards swipe sideways, about 1¼ visible */
-  .project-row {
-    justify-content: flex-start; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;
-    margin-inline: calc(var(--gutter) * -1); padding-inline: var(--gutter); scroll-padding-inline: var(--gutter);
+  /* Up Next: the wide photo can't fit a phone, so each slide shows it on
+     top cropped around Malia (--focus-mobile), fading into teal, with the
+     text below and the controls along the bottom */
+  .up-next__photo {
+    position: relative; inset: auto; z-index: -2;
+    display: block; height: auto; aspect-ratio: 4 / 3;
+    object-position: var(--focus-mobile, 80% 30%);
   }
-  .project-row::-webkit-scrollbar { display: none; }
-  .project-card { flex: 0 0 78%; scroll-snap-align: start; }
+  .up-next__slide::before { background: linear-gradient(180deg, rgba(21,48,47,0) 0, rgba(21,48,47,0) 45vw, var(--teal-900) 75vw); }
+  .up-next__inner { grid-template-columns: 1fr; gap: 20px; min-height: 0; margin-top: -36px; padding-top: 0; padding-bottom: 72px; text-shadow: none; }
+  .up-next__item { padding: 0 0 20px; border-right: 0; border-bottom: 1px solid rgba(244,240,232,.35); }
+  .up-next__soon svg { width: 130px; }
+  .up-next__controls { bottom: 18px; }
+  .up-next__pause, .up-next__dot { height: 44px; }      /* comfortable tap targets */
+  .up-next__pause { width: 44px; }
 
   /* Footer: single centered column, Let's Work Together first */
   .footer-grid { grid-template-columns: 1fr; gap: 28px; text-align: center; }
