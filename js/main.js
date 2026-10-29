@@ -169,11 +169,11 @@ if (heroReel && heroReelBtn) {
   });
 }
 
-// 4. Sideways strips: Headshots and Featured Work
-//    Each strip scrolls by swipe or trackpad on its own; the arrows move one
-//    card at a time, dim at either end, and a thin bar shows the position.
-//    Headshots also open full-size; Featured Work cards open the video player.
-document.querySelectorAll('.headshots, .work-section').forEach((section) => {
+// 4. Headshots strip
+//    Scrolls by swipe or trackpad; the arrows move one photo at a time, dim at
+//    either end, and a thin bar shows the position. Photos open full-size.
+//    With data-autoplay on the section, it also moves on its own (see below).
+document.querySelectorAll('.headshots').forEach((section) => {
   const track = section.querySelector('.carousel__track');
   const prev = section.querySelector('.carousel__btn--prev');
   const next = section.querySelector('.carousel__btn--next');
@@ -209,6 +209,50 @@ document.querySelectorAll('.headshots, .work-section').forEach((section) => {
   addEventListener('resize', update);
   update();
 
+  // Auto-scroll: one photo every few seconds, looping back to the start.
+  // Holds while the visitor is hovering, touching or tabbing through the strip,
+  // while a photo is open, or while the strip is off screen. The pause button
+  // stops it until pressed again. Off for visitors who reduce motion.
+  const delay = Number(section.dataset.autoplay);
+  const pauseBtn = section.querySelector('.carousel__btn--pause');
+  if (delay && !reduceMotion) {
+    const holds = new Set();
+    let stopped = false;
+    let timer = null;
+    const tick = () => {
+      const max = track.scrollWidth - track.clientWidth;
+      if (track.scrollLeft >= max - 2) track.scrollTo({ left: 0, behavior: 'smooth' });
+      else track.scrollBy({ left: step(), behavior: 'smooth' });
+    };
+    const sync = () => {
+      clearInterval(timer);
+      timer = (!stopped && holds.size === 0) ? setInterval(tick, delay) : null;
+    };
+    const hold = (why, on) => { on ? holds.add(why) : holds.delete(why); sync(); };
+
+    track.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') hold('hover', true); });
+    track.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') hold('hover', false); });
+    let touchTimer = null;                      // after a swipe, wait a while before moving again
+    track.addEventListener('touchstart', () => { clearTimeout(touchTimer); hold('touch', true); }, { passive: true });
+    track.addEventListener('touchend', () => { touchTimer = setTimeout(() => hold('touch', false), delay * 2); }, { passive: true });
+    section.addEventListener('focusin', (e) => { if (e.target !== pauseBtn) hold('focus', true); });
+    section.addEventListener('focusout', () => hold('focus', false));
+    new IntersectionObserver(([e]) => hold('offscreen', !e.isIntersecting), { threshold: 0.3 }).observe(track);
+    document.addEventListener('visibilitychange', () => hold('tab', document.hidden));
+    section._hold = hold;                       // the photo viewer below holds it while open
+
+    if (pauseBtn) {
+      pauseBtn.hidden = false;
+      pauseBtn.addEventListener('click', () => {
+        stopped = !stopped;
+        pauseBtn.setAttribute('aria-pressed', String(stopped));
+        pauseBtn.setAttribute('aria-label', stopped ? 'Play slideshow' : 'Pause slideshow');
+        sync();
+      });
+    }
+    sync();
+  }
+
   // Full-size view (Headshots only)
   if (!section.classList.contains('headshots')) return;
   const dialog = section.querySelector('.lightbox');
@@ -224,7 +268,7 @@ document.querySelectorAll('.headshots, .work-section').forEach((section) => {
     img.alt = thumb.alt;
     stage.replaceChildren(img);
   };
-  items.forEach((item, n) => item.addEventListener('click', () => { show(n); dialog.showModal(); }));
+  items.forEach((item, n) => item.addEventListener('click', () => { show(n); dialog.showModal(); section._hold?.('viewer', true); }));
   dialog.querySelector('.lightbox__btn--prev').addEventListener('click', () => show(current - 1));
   dialog.querySelector('.lightbox__btn--next').addEventListener('click', () => show(current + 1));
   dialog.querySelector('.lightbox__close').addEventListener('click', () => dialog.close());
@@ -234,6 +278,7 @@ document.querySelectorAll('.headshots, .work-section').forEach((section) => {
     if (e.key === 'ArrowRight') show(current + 1);
   });
   dialog.addEventListener('close', () => {
+    section._hold?.('viewer', false);
     stage.replaceChildren();
     // bring the photo they were looking at into view in the strip
     items[current].scrollIntoView({ behavior, block: 'nearest', inline: 'start' });
@@ -292,151 +337,13 @@ cards.forEach((card) => card.addEventListener('click', (e) => {
   if (openInViewer({ youtube: card.href, text }, card)) e.preventDefault();   // otherwise it opens YouTube
 }));
 
-// 7. Behind the Scenes (footer 3×3)
-//    Clicking a tile grows that photo out of the tile until it fills the 3×3,
-//    shown whole. Then its gaffer-tape label presses on and its sticky note
-//    slaps onto the corner. Arrows / arrow keys / swipe step through; ×, Esc
-//    or a click on the dark area shrinks it back into its tile.
-//    Visitors who turn off animations get no grow, just the photo.
-document.querySelectorAll('.footer-gallery').forEach((section) => {
-  const board = section.querySelector('.bts-board');
-  const stage = section.querySelector('.bts-stage');
-  if (!board || !stage) return;
-  const tiles = [...board.querySelectorAll('.grid-photo')];
-  const view = stage.querySelector('.bts-view');
-  const img = stage.querySelector('.bts-view__img');
-  const tape = stage.querySelector('.bts-view__tape');
-  const cap = stage.querySelector('figcaption');
-  const note = stage.querySelector('.bts-note');
-  const count = stage.querySelector('.bts-count');
-  const closeBtn = stage.querySelector('.bts-btn--close');
-  const tilts = [-5, 3, -3, 4, -4, 2, -6, 5, -2];
-  const colors = ['yellow', 'pink', 'blue'];
-  const DUR = 420;
-  const EASE = 'cubic-bezier(.2,.7,.2,1)';
-  let current = -1;
-  let busy = false;
-
-  // Where a tile sits, measured inside the board
-  const tileBox = (n) => {
-    const b = board.getBoundingClientRect(), t = tiles[n].getBoundingClientRect();
-    return { left: t.left - b.left, top: t.top - b.top, width: t.width, height: t.height };
-  };
-  // The photo's final box: as large as fits in the 3×3, keeping its shape, centred
-  const fitBox = () => {
-    const W = board.clientWidth, H = board.clientHeight, pad = 10;
-    const r = (img.naturalWidth || 1) / (img.naturalHeight || 1);
-    let w = W - pad * 2, h = w / r;
-    if (h > H - pad * 2) { h = H - pad * 2; w = h * r; }
-    return { left: (W - w) / 2, top: (H - h) / 2, width: w, height: h };
-  };
-  const px = (b) => ({ left: `${b.left}px`, top: `${b.top}px`, width: `${b.width}px`, height: `${b.height}px` });
-  const place = (b) => Object.assign(view.style, px(b));
-  const animateBox = (from, to) => (reduceMotion
-    ? Promise.resolve()
-    : view.animate([px(from), px(to)], { duration: DUR, easing: EASE }).finished.catch(() => {}));
-  const restart = (el) => { el.classList.remove('is-in'); void el.offsetWidth; el.classList.add('is-in'); };
-
-  // Fill in the label, note, caption and counter for photo n
-  const dress = (n) => {
-    const tile = tiles[n];
-    tape.textContent = tile.dataset.tape || '';
-    tape.style.setProperty('--tilt', `${tilts[n % tilts.length]}deg`);
-    const text = tile.dataset.note || '';
-    note.hidden = !text;
-    note.querySelector('p').textContent = text;
-    note.dataset.color = colors[n % colors.length];
-    cap.textContent = tile.dataset.caption || '';
-    img.alt = tile.querySelector('img').alt;
-    count.textContent = `${n + 1} / ${tiles.length}`;
-    restart(tape);
-    if (text) restart(note);
-  };
-
-  const load = async (n) => {
-    img.src = tiles[n].dataset.full;
-    try { await img.decode(); } catch (e) { /* shows once loaded */ }
-  };
-
-  const open = async (n) => {
-    if (busy) return;
-    busy = true;
-    current = n;
-    await load(n);
-    stage.hidden = false;
-    dress(n);
-    const from = tileBox(n), to = fitBox();
-    place(to);
-    if (!reduceMotion) stage.animate([{ backgroundColor: 'rgba(8,20,19,0)' }, {}], { duration: DUR, easing: EASE });
-    closeBtn.focus({ preventScroll: true });
-    await animateBox(from, to);
-    busy = false;
-  };
-
-  const go = async (n) => {
-    if (busy || current < 0) return;
-    busy = true;
-    const from = fitBox();
-    current = (n + tiles.length) % tiles.length;
-    if (!reduceMotion) await view.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 140, fill: 'forwards' }).finished.catch(() => {});
-    await load(current);
-    const to = fitBox();
-    place(to);
-    dress(current);
-    view.getAnimations().forEach((a) => a.cancel());
-    if (!reduceMotion) {
-      view.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200 });
-      await animateBox(from, to);
-    }
-    busy = false;
-  };
-
-  const close = async () => {
-    if (busy || stage.hidden) return;
-    busy = true;
-    const to = tileBox(current);
-    note.hidden = true;
-    tape.textContent = '';
-    if (!reduceMotion) {
-      stage.animate([{}, { backgroundColor: 'rgba(8,20,19,0)' }], { duration: DUR, easing: EASE });
-      await animateBox(fitBox(), to);
-    }
-    stage.hidden = true;
-    tiles[current].focus({ preventScroll: true });
-    busy = false;
-  };
-
-  // Start fetching a full-size photo as soon as someone shows interest in a tile
-  tiles.forEach((tile, n) => {
-    tile.addEventListener('click', () => open(n));
-    const warm = () => { const p = new Image(); p.src = tile.dataset.full; };
-    tile.addEventListener('pointerenter', warm, { once: true });
-    tile.addEventListener('touchstart', warm, { once: true, passive: true });
-  });
-  stage.querySelector('.bts-btn--prev').addEventListener('click', () => go(current - 1));
-  stage.querySelector('.bts-btn--next').addEventListener('click', () => go(current + 1));
-  closeBtn.addEventListener('click', close);
-  stage.addEventListener('click', (e) => { if (e.target === stage) close(); });
-  stage.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') close();
-    if (e.key === 'ArrowLeft') go(current - 1);
-    if (e.key === 'ArrowRight') go(current + 1);
-  });
-  // Clicking anywhere else on the page closes it too
-  document.addEventListener('click', (e) => {
-    if (!stage.hidden && !busy && !board.contains(e.target)) close();
-  });
-  // Keep it fitted if the window is resized while open
-  addEventListener('resize', () => { if (!stage.hidden) place(fitBox()); });
-
-  // Swipe between photos on touch screens
-  let startX = null;
-  stage.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; }, { passive: true });
-  stage.addEventListener('touchend', (e) => {
-    if (startX === null) return;
-    const dx = e.changedTouches[0].clientX - startX;
-    if (Math.abs(dx) > 40) go(current + (dx < 0 ? 1 : -1));
-    startX = null;
+// 6b. "View Featured Reel" (Featured Work heading) plays the hero's reel in
+//     the pop-up player. The link lives on the hero's "Watch Reel" button.
+document.querySelectorAll('.work-reel-btn').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const link = document.querySelector('.hero__reel-btn')?.href;
+    if (!link) return;
+    if (!openInViewer({ youtube: link, text: 'Featured Reel  ·  Malia Aiello' }, btn)) window.open(link, '_blank', 'noopener');
   });
 });
 
@@ -555,34 +462,114 @@ document.querySelectorAll('.up-next').forEach((root) => {
 });
 
 
-// 9. Press: "Load more" on phones
-//    Phones show the first 3 press cards; the button reveals 3 more at a time
-//    and disappears once everything is showing. Tablets and laptops show every
-//    card and never see the button. Without JavaScript, all cards show.
-document.querySelectorAll('.press-section').forEach((section) => {
-  const cards = [...section.querySelectorAll('.press-grid .press-card')];
-  const btn = section.querySelector('.press-more__btn');
-  if (!btn) return;
+// 9. "Load more" on phones (Press and Featured Work)
+//    Phones show the first few items; the button reveals data-step more at a
+//    time and disappears once everything is showing. Tablets and laptops show
+//    every item and never see the button. Without JavaScript, all items show.
+document.querySelectorAll('.load-more__btn').forEach((btn) => {
+  const items = [...document.querySelectorAll(btn.dataset.items)];
   const step = Number(btn.dataset.step) || 3;
-  if (cards.length <= step) return;
+  if (items.length <= step) return;
   let shown = step;
 
   const update = () => {
-    cards.forEach((card, i) => card.classList.toggle('is-tucked', i >= shown));
-    const left = cards.length - shown;
+    items.forEach((item, i) => item.classList.toggle('is-tucked', i >= shown));
+    const left = items.length - shown;
     btn.hidden = left <= 0;
     btn.textContent = `Load more (${left})`;
   };
 
   btn.addEventListener('click', () => {
     const first = shown;
-    shown = Math.min(shown + step, cards.length);
+    shown = Math.min(shown + step, items.length);
     update();
-    cards.slice(first, shown).forEach((card) => card.classList.add('is-revealed'));
-    // Move keyboard / screen-reader focus to the first new card
-    cards[first].focus({ preventScroll: true });
-    if (btn.hidden) cards[first].scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'nearest' });
+    items.slice(first, shown).forEach((item) => item.classList.add('is-revealed'));
+    // Move keyboard / screen-reader focus to the first new item
+    items[first].focus({ preventScroll: true });
+    if (btn.hidden) items[first].scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'nearest' });
   });
 
+  update();
+});
+
+
+// 11. Hero film grain (over the BTS slideshow). A small canvas of random noise,
+// redrawn about 12 times a second and stretched over the video (overlay blend).
+// Stops when the hero is off screen; drawn once for visitors who reduce motion.
+document.querySelectorAll('.film__grain').forEach((cv) => {
+  const ctx = cv.getContext('2d');
+  const W = 420, H = 470;
+  cv.width = W; cv.height = H;
+  const img = ctx.createImageData(W, H);
+  const draw = () => {
+    const d = img.data;
+    for (let i = 0; i < d.length; i += 4) {
+      const v = Math.random() * 255;
+      d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 55;
+    }
+    // occasional dust speck
+    if (Math.random() < .25) {
+      const x = Math.random() * W | 0, y = Math.random() * H | 0;
+      for (let k = 0; k < 3; k++) { const p = ((y + k) * W + x) * 4; if (p < d.length) { d[p] = d[p + 1] = d[p + 2] = 15; d[p + 3] = 230; } }
+    }
+    ctx.putImageData(img, 0, 0);
+  };
+  draw();
+  if (reduceMotion) return;
+  let on = true, last = 0;
+  new IntersectionObserver(([e]) => { on = e.isIntersecting; }).observe(cv);
+  const loop = (t) => { if (on && t - last > 80) { draw(); last = t; } requestAnimationFrame(loop); };
+  requestAnimationFrame(loop);
+});
+
+
+// 12. Hero BTS slideshow. Cross-fades through the photos with a slow
+// push-in; each slide's tape label presses on and its sticky note slaps on.
+// Holds on the first slide (with its note) for visitors who reduce motion.
+document.querySelectorAll('.film-slides').forEach((wrap) => {
+  const slides = [...wrap.querySelectorAll('.film-slide')];
+  const film = wrap.closest('.hero__film');
+  const tape = film.querySelector('.film__tape');
+  const note = film.querySelector('.film__note');
+  const colors = ['yellow', 'pink', 'blue'];
+  const every = Number(wrap.dataset.interval) || 4500;
+  let i = 0, visible = true;
+  const restart = (el, cls) => { el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); };
+  const label = (n) => {
+    const s = slides[n];
+    tape.textContent = s.dataset.tape || '';
+    tape.style.setProperty('--tilt', `${[-3, 2, -4, 3, -2, 4][n % 6]}deg`);
+    restart(tape, 'is-in');
+    note.classList.remove('is-out');
+    note.hidden = !s.dataset.note;
+    note.querySelector('p').textContent = s.dataset.note || '';
+    note.dataset.color = colors[n % colors.length];
+    restart(note, 'is-in');
+  };
+  label(0);
+  if (reduceMotion || slides.length < 2) return;
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(film);
+  setInterval(() => {
+    if (!visible || document.hidden) return;
+    note.classList.add('is-out');
+    const prev = slides[i];
+    i = (i + 1) % slides.length;
+    prev.classList.remove('is-active'); prev.classList.add('is-leaving');
+    setTimeout(() => prev.classList.remove('is-leaving'), 1300);
+    slides[i].classList.add('is-active');
+    setTimeout(() => label(i), 450);
+  }, every);
+});
+
+
+// 13. Menu bar: soft shadow once the page has scrolled
+document.querySelectorAll('.site-header').forEach((bar) => {
+  const hero = document.querySelector('.hero');
+  const update = () => {
+    bar.classList.toggle('is-scrolled', scrollY > 4);
+    // phones: the pinned round menu button turns solid once past the hero (or after a little scrolling on other pages)
+    bar.classList.toggle('is-past-hero', hero ? hero.getBoundingClientRect().bottom < 70 : scrollY > 40);
+  };
+  addEventListener('scroll', update, { passive: true });
   update();
 });
